@@ -69,7 +69,7 @@ callback
 	appelée à chaque paquet capturé
 	args: correspond aux arguments utilisateurs de la fonction pcap_loop
 	pcap_pkthdr: remonté par le drivers bpf. métadonnées concernant le paquet remonté (heure, nb d'octets capturés, etc)
-	packet: pointeur sur une zone mémoire (octets non signés) contenant tous les paquets capturés. le premier octet correspond à l'adress destinataire ethernet, etc
+	packet: pointeur sur une zone mémoire (octets non signés) contenant tous les paquets capturés. le premier octet correspond à l'adresse destinataire ethernet, etc
 		-> décapsulation du paquet
 		-> affichage du contenu pour chaque bloc
 

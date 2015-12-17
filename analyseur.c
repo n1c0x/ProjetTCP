@@ -6,16 +6,14 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <unistd.h>
+#include "functions.h"
 
-// structures d'entêtes
-#include <net/ethernet.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
 
 // définition des constantes
-#define PACKET_SIZE 1514
-#define TO_MS 0
-#define PROMISC 1
+#define PACKET_SIZE 1514 	// taille du paquet
+#define TO_MS 0				// renvoie immédiatement du paquet après la capture
+#define PROMISC 1			// mode promiscious (1: on ,0: off)
+#define CNT 0				// nombre de paquets à analyser. 0: infini
 
 int main(int argc, char *argv[])
 	{
@@ -24,6 +22,11 @@ int main(int argc, char *argv[])
 		bpf_u_int32 netmask;
 		int c;		// Arguments
 		pcap_t* p;	// capture
+
+		const u_char *packet;
+	    struct pcap_pkthdr hdr;     /* pcap.h */
+	    struct ether_header *eptr;  /* net/ethernet.h */
+
 
 		char* inter = pcap_lookupdev(errbuf);
 		if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
@@ -35,11 +38,11 @@ int main(int argc, char *argv[])
 		struct in_addr mask;
 		mask.s_addr=netmask;
 		
-
+/*
 		printf("Carte réseau: %s\n", inter);
 		printf ("Réseau: %s\n", inet_ntoa(addr));
 		printf ("Masque: %s\n", inet_ntoa(mask));
-
+*/
 		while ((c = getopt (argc, argv, "io:fv:")) != -1)
 	    switch (c)
 	    {
@@ -60,7 +63,9 @@ int main(int argc, char *argv[])
 				p = pcap_open_offline(optarg, errbuf);
 		    	if (p != NULL){
 					printf("Fichier ouvert\n");
-					
+					pcap_loop(p, CNT, got_packet, NULL);
+
+
 				}else{
 					perror("Impossible d'ouvrir le fichier");
 				}
