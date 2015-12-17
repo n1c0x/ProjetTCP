@@ -32,9 +32,13 @@ pcap_loopalldev
 	renvoie une structure (liste chainée) qui contient tous les noms des interfaces présentes
 	(il faut vérifier que l'interface donnée par l'utilisateur soit dans cette liste)
 
-pcap_lookupnet 
-	renvoie un entier sur 32 bits. convertir en notation décimale pointée avec inet_ntoa (prends un entier en entrée et renvoie une adresse IP en notation décimale pointée)
+pcap_lookupnet(char* device, bpf_u_int32 *netaddr, bpf_u_int32 *netmask, char* errbuf)
+	renvoie l'adresse IP (entier sur 32 bits). convertir en notation décimale pointée avec inet_ntoa (prends un entier en entrée et renvoie une adresse IP en notation décimale pointée)
 	inet_ntoa sauvegarde en statique. il faut sauvegarder l'adresse IP dans une variable après chaque utilisation
+	Convertion en notation décimale pointée: 
+		struct in_addr addr;
+		addr.s_addr=netaddr;
+		printf ("%s\n", inet_ntoa(addr));
 
 pcap_open_live ouvre la captures
 	renvoie un pcap_t*
