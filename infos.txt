@@ -1,0 +1,82 @@
+TP: - capturer des trames
+	- décoder quelques champs
+
+notation: 30% de l'UE
+ftp: 10% de l'UE
+
+
+TCPdump: librairie de capture de trames sur le réseau
+TCP a la possibilité de mettre la carte réseau en mode promiscious
+il est plus intéressant de filter au niveau noyau qu'au niveau utilisateur.
+	- noyau: filtre avant de capturer les paquets
+	- utilisateur: filtre après avoir capturé tous les paquets
+tcpdump récupère une structure de données de BPF
+
+librairie PCAP: interface de capture de trafic
+Afficher à l'écran des données synthétiques mais avec un peu plus d'infos
+http://www.tcpdump.org/
+
+Il faudra 3 modes de verbosité
+	simple
+	protocoles intermédiares
+	mode complet (tout)
+
+char* pcap_lookupdev(char* errbuf)
+	indique l'interface par défaut
+	recherche de l'interface
+	retourne une chaine de caractères correspondant à l'interface
+	NULL sinon
+	pcap_lookupdev -> "eth0"
+
+pcap_loopalldev
+	renvoie une structure (liste chainée) qui contient tous les noms des interfaces présentes
+	(il faut vérifier que l'interface donnée par l'utilisateur soit dans cette liste)
+
+pcap_lookupnet 
+	renvoie un entier sur 32 bits. convertir en notation décimale pointée avec inet_ntoa (prends un entier en entrée et renvoie une adresse IP en notation décimale pointée)
+	inet_ntoa sauvegarde en statique. il faut sauvegarder l'adresse IP dans une variable après chaque utilisation
+
+pcap_open_live ouvre la captures
+	renvoie un pcap_t*
+	permet de ne capture qu'un nombre donné d'octets
+	activation du mode promiscious
+
+pcap_open_offline 
+	ouverture d'un fichier de capture (différent de pcap_open_live)
+	fichier de capture est obtenu avec tcpdump -w
+	pratique à utiliser en test, en utilisant tout le temps le même paquet
+
+pcap_close ferme la capture (pour papc_open_live et pcap_open_offline)
+
+gestion des filtres (ne marque qu'avec pcap_open_live)
+	pcap_compile compile le filtre.
+	char *str est une chaine de caractères qui contient le filtre. à trouver dans man tcpdump et pcap-filter
+
+bpf_program: structure qui stocke le filtre (chaine de caractères)
+
+pcap_setfilter: associe le filtre compilé à la capture
+
+pcap_loop
+	capture les trames avec l'interface et le filtre données
+	callback: fonction appelée à chaque nouveau paquet reçu (on y fait l'analyse du paquet)
+	user: paramètres additionnels pour la fonction callback
+
+callback
+	appelée à chaque paquet capturé
+	args: correspond aux arguments utilisateurs de la fonction pcap_loop
+	pcap_pkthdr: remonté par le drivers bpf. métadonnées concernant le paquet remonté (heure, nb d'octets capturés, etc)
+	packet: pointeur sur une zone mémoire (octets non signés) contenant tous les paquets capturés. le premier octet correspond à l'adress destinataire ethernet, etc
+		-> décapsulation du paquet
+		-> affichage du contenu pour chaque bloc
+
+
+les structures d'entête sont déjà définis dans les fichiers d'entête
+	net/ethernet.h
+	netinet/ip.h
+	netinet/tcp.h
+	...
+	(bootp.h) à chercher
+Pas utilisable avec HTTP (parce que ASCII)
+
+u_char: tableau d'octets
+
