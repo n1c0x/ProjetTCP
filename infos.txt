@@ -17,9 +17,9 @@ Afficher à l'écran des données synthétiques mais avec un peu plus d'infos
 http://www.tcpdump.org/
 
 Il faudra 3 modes de verbosité
-	simple
-	protocoles intermédiares
-	mode complet (tout)
+	simple -> 1 ligne par paquet
+	protocoles intermédiares -> 1 ligne par protocole
+	mode complet (tous les champs)
 
 char* pcap_lookupdev(char* errbuf)
 	indique l'interface par défaut
@@ -81,6 +81,10 @@ les structures d'entête sont déjà définis dans les fichiers d'entête
 	...
 	(bootp.h) à chercher
 Pas utilisable avec HTTP (parce que ASCII)
+vérifier que le texte soit affichable
 
 u_char: tableau d'octets
 
+Pour ethernet: les octets de poids fort sont à droite
+	ntohl()
+	ntohs()

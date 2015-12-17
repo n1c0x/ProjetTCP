@@ -1,2 +1,4 @@
+prefix = analyseur
+
 all: 
-	gcc main.c -lpcap -o analyse.out
+	gcc $(prefix).c -lpcap -o $(prefix)
