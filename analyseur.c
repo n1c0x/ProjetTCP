@@ -64,8 +64,6 @@ int main(int argc, char *argv[])
 		    	if (p != NULL){
 					printf("Fichier ouvert\n");
 					pcap_loop(p, CNT, got_packet, NULL);
-
-
 				}else{
 					perror("Impossible d'ouvrir le fichier");
 				}
