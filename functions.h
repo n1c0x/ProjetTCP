@@ -1,4 +1,3 @@
-
 // structures d'entêtes
 #include <net/ethernet.h>
 #include <netinet/ip.h>
@@ -11,15 +10,15 @@ void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* pack
 	eth = (struct ether_header*)(packet);
 	
 	printf("\tAdresse MAC destination: ");
-	for (int i = 0; i <= sizeof(eth->ether_dhost); ++i)
+	for (int i = 0; i < sizeof(eth->ether_dhost); ++i)
 	{
 		printf("%x:", eth->ether_dhost[i]);
 	}
-	printf("\t\n\tAdresse MAC source: ");
+	printf("\n\tAdresse MAC source: ");
 	for (int i = 0; i < sizeof(eth->ether_shost); ++i)
 	{
 		printf("%x:", eth->ether_shost[i]);
 	}
 	printf("%d\n", sizeof(eth->ether_type));
-	// ether_dhost est un tableau. a parcourir
+
 }
