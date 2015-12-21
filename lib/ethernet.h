@@ -2,18 +2,22 @@
 #include "ip4.h"
 #include "ip6.h"
 
+void unknown_protocol();
+
 void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	/* Déclarations des fonctions utilisées */
 	void ip4(const u_char* packet);
 	void ip6(const u_char* packet);
-	
+
 	const struct ether_header *eth;
 	
 	printf("Heure de réception: %d\n", pkthdr->ts);
 
-	int size_ethernet = sizeof(eth);
+	int size_ethernet;
 	eth = (struct ether_header*)(packet);
-	
+
+	size_ethernet = sizeof(eth->ether_dhost) + sizeof(eth->ether_shost) + sizeof(eth->ether_type);
+
 	printf("\tMAC destination: ");
 	for (int i = 0; i < sizeof(eth->ether_dhost); ++i)
 	{
@@ -26,7 +30,7 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	}
 	printf("\n");
 	printf("\tProtocole: ");
-
+	packet = packet + size_ethernet;
 	switch(ntohs(eth->ether_type)) {
 
 		case 0x0200:
@@ -63,8 +67,8 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 			printf("Tests");
 		break;		
 		default :
-			printf("Protocole inconnu");
+			unknown_protocol();
 	}
-	packet = packet + size_ethernet;
+	
 	printf("\n-----------------------------------\n");
 }
