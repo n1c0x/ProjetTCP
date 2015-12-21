@@ -7,58 +7,63 @@ void udp(const u_char* packet){
 	const struct udphdr *udp;
 	
 	udp = (struct udphdr*)(packet);
-	//ip_src = (struct ip_src*)(packet->in_addr);
-
-	printf("source port: %x\n", udp->source);
-	printf("dest port: %x\n", udp->dest);
-	printf("length: %x\n", udp->len);
-	printf("checksum: %x\n", udp->check);
 
 /*
-	addr.s_addr = ip->saddr;
-	printf("\t\tAdresse IP source: %s\n",inet_ntoa(addr));
-	addr.s_addr = ip->daddr;
-	printf("\t\tAdresse IP destination: %s\n",inet_ntoa(addr));
+	printf("source port: %x\n", ntohs(udp->source));
+	printf("dest port: %x\n", ntohs(udp->dest));
+	printf("length: %x\n", ntohs(udp->len));
+	printf("checksum: %x\n", ntohs(udp->check));
+*/
+
+	printf("\t\t\tPort source: %d\n",ntohs(udp->source));
+	printf("\t\t\tPort destination: %d\n",ntohs(udp->source));
+	printf("\t\t\tLongueur: %d octets\n", ntohs(udp->len));
 	
-	//printf("Protocole: %x\n", ip->protocol);
-	/*
-	printf("\n\tAdresse IP source: ");
-	for (int i = 0; i < sizeof(ip->ether_shost); ++i)
-	{
-		printf("%x:", ip->ether_shost[i]);
-	}
-	printf("\n");
-	printf("\tProtocole: ");
+	switch(ntohs(udp->source)) {
 
-
-	switch(ip->protocol) {
-
-		case 0x01:
-			printf("\t\t");
-			printf("ICMP");
+		case 0x07:
+			printf("\t\t\t");
+			printf("Echo");
 		break;
-		case 0x06:
-			printf("\t\t");
-			printf("TCP");
+		case 0x20:
+			printf("\t\t\t");
+			printf("FTP-data");
 		break;
-		case 0x11:
-			printf("\t\t");
-			printf("UDP");
+		case 0x21:
+			printf("\t\t\t");
+			printf("FTP");
 		break;
-		case 0x3A:
-			printf("\t\t");
-			printf("IPv6-ICMP");
+		case 0x22:
+			printf("\t\t\t");
+			printf("SSH");
 		break;
-		case 0x73:
-			printf("\t\t");
-			printf("L2TP");
+		case 0x23:
+			printf("\t\t\t");
+			printf("Telnet");
 		break;
-		case 0x84:
-			printf("\t\t");
-			printf("SCTP");
+		case 0x25:
+			printf("\t\t\t");
+			printf("SMTP");
+		break;
+		case 0x53:
+			printf("\t\t\t");
+			printf("DNS");
+		break;
+		case 0x67:
+			printf("\t\t\t");
+			printf("BOOTPS");
+		break;
+		case 0x68:
+			printf("\t\t\t");
+			printf("BOOTPC");
+		break;
+		case 0x69:
+			printf("\t\t\t");
+			printf("TFTP");
 		break;
 		default :
+			printf("\t\t\t");
 			unknown_protocol();
 	}
-	printf("\n");*/
+	printf("\n");
 }

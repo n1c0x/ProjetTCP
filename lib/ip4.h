@@ -16,7 +16,6 @@ void ip4(const u_char* packet){
 	int size_ip = sizeof(ip);
 
 	ip = (struct iphdr*)(packet);
-	//ip_src = (struct ip_src*)(packet->in_addr);
 /*
 	printf("version: %x\n", ip->version);
 	printf("header length: %x\n", ip->ihl);
@@ -30,24 +29,17 @@ void ip4(const u_char* packet){
 	printf("IP src: %x\n", ntohl(ip->saddr));
 	printf("IP dst: %x\n", ntohl(ip->daddr));
 */
-	size_ip = sizeof((u_int8_t)ip->version)+sizeof((u_int8_t)ip->ihl)+sizeof(ip->tos)+sizeof(ip->tot_len)+sizeof(ip->id)+sizeof(ip->frag_off)+sizeof(ip->ttl)+sizeof(ip->protocol)+sizeof(ip->check)+sizeof(ip->saddr)+sizeof(ip->daddr);
+
+	/* On multiplie par 4 parce que la taille du champ IHL est de 4 bits */
+	size_ip = ip->ihl * 4 ;
 
 	addr.s_addr = ip->saddr;
 	printf("\t\tAdresse IP source: %s\n",inet_ntoa(addr));
 	addr.s_addr = ip->daddr;
 	printf("\t\tAdresse IP destination: %s\n",inet_ntoa(addr));
-	
-	//printf("Protocole: %x\n", ip->protocol);
-	/*
-	printf("\n\tAdresse IP source: ");
-	for (int i = 0; i < sizeof(ip->ether_shost); ++i)
-	{
-		printf("%x:", ip->ether_shost[i]);
-	}
-	printf("\n");
-	printf("\tProtocole: ");
-*/
+
 	packet = packet + size_ip;
+	printf("\tProtocole: ");
 	switch(ip->protocol) {
 
 		case 0x01:
@@ -76,6 +68,7 @@ void ip4(const u_char* packet){
 			printf("SCTP");
 		break;
 		default :
+			printf("\t\t");
 			unknown_protocol();
 	}
 	printf("\n");
