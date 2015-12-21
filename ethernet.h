@@ -1,6 +1,12 @@
 #include <net/ethernet.h>
+#include "ip4.h"
+#include "ip6.h"
 
 void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
+	/* Déclarations des fonctions utilisées */
+	void ip4(const u_char* packet);
+	void ip6(const u_char* packet);
+	
 	const struct ether_header *eth;
 	
 	printf("Heure de réception: %d\n", pkthdr->ts);
@@ -21,43 +27,44 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	printf("\n");
 	printf("\tProtocole: ");
 
-	switch(eth->ether_type) {
+	switch(ntohs(eth->ether_type)) {
 
-		case 0x0002:
+		case 0x0200:
 			printf("Xerox PUP");
 		break;
-		case 0x0005:
+		case 0x0500:
 			printf("Sprite");
 		break;
-		case 0x0008:
-			printf("IPv4");
+		case 0x0800:
+			ip4(packet);
 		break;
-		case 0x0608:
+		case 0x0806:
 			printf("ARP");
 		break;
-		case 0x3580:
+		case 0x8035:
 			printf("Reverse ARP");
 		break;
-		case 0xB980:
+		case 0x80B9:
 			printf("AppleTalk");
 		break;
-		case 0xF380:
+		case 0x80F3:
 			printf("AppleTalk ARP");
 		break;
-		case 0x0081:
+		case 0x8100:
 			printf("Tag VLAN");
 		break;
-		case 0x3781:
+		case 0x8137:
 			printf("IPX");
 		break;
-		case 0xDD86:
-			printf("IPv6");
+		case 0x86DD:
+			ip6(packet);
 		break;
-		case 0x0090:
+		case 0x9000:
 			printf("Tests");
 		break;		
 		default :
 			printf("Protocole inconnu");
 	}
-	printf("\n");
+	packet = packet + size_ethernet;
+	printf("\n-----------------------------------\n");
 }
