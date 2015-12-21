@@ -8,6 +8,8 @@ void unknown_protocol();
 void ip4(const u_char* packet){
 	/* Déclarations des fonctions utilisées */
 	void udp(const u_char* packet);
+	void tcp(const u_char* packet);
+
 
 	printf("IPv4\n");
 	const struct iphdr *ip;
@@ -39,7 +41,7 @@ void ip4(const u_char* packet){
 	printf("\t\tAdresse IP destination: %s\n",inet_ntoa(addr));
 
 	packet = packet + size_ip;
-	printf("\tProtocole: ");
+	printf("\t\tProtocole: ");
 	switch(ip->protocol) {
 
 		case 0x01:
@@ -47,11 +49,10 @@ void ip4(const u_char* packet){
 			printf("ICMP");
 		break;
 		case 0x06:
-			printf("\t\t");
-			printf("TCP");
+			//printf("TCP");
+			tcp(packet);
 		break;
 		case 0x11:
-			printf("\t\t");
 			//printf("UDP");
 			udp(packet);
 		break;

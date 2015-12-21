@@ -16,48 +16,47 @@ void udp(const u_char* packet){
 */
 
 	printf("\t\t\tPort source: %d\n",ntohs(udp->source));
-	printf("\t\t\tPort destination: %d\n",ntohs(udp->source));
+	printf("\t\t\tPort destination: %d\n",ntohs(udp->dest));
 	printf("\t\t\tLongueur: %d octets\n", ntohs(udp->len));
 	
-	switch(ntohs(udp->source)) {
-
-		case 0x07:
+	switch(ntohs(udp->dest)) {
+		case 07:
 			printf("\t\t\t");
 			printf("Echo");
 		break;
-		case 0x20:
+		case 20:
 			printf("\t\t\t");
 			printf("FTP-data");
 		break;
-		case 0x21:
+		case 21:
 			printf("\t\t\t");
 			printf("FTP");
 		break;
-		case 0x22:
+		case 22:
 			printf("\t\t\t");
 			printf("SSH");
 		break;
-		case 0x23:
+		case 23:
 			printf("\t\t\t");
 			printf("Telnet");
 		break;
-		case 0x25:
+		case 25:
 			printf("\t\t\t");
 			printf("SMTP");
 		break;
-		case 0x53:
+		case 53:
 			printf("\t\t\t");
 			printf("DNS");
 		break;
-		case 0x67:
+		case 67:
 			printf("\t\t\t");
 			printf("BOOTPS");
 		break;
-		case 0x68:
+		case 68:
 			printf("\t\t\t");
 			printf("BOOTPC");
 		break;
-		case 0x69:
+		case 69:
 			printf("\t\t\t");
 			printf("TFTP");
 		break;
