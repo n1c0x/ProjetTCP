@@ -47,10 +47,7 @@ int main(int argc, char *argv[])
 		    	// 	printf("Erreur\n");
 		    	// 	break;
 		    	case 'i':
-		      		// utilisation de l'interface définie
-		    		// si non présent, prendre l'interface par défaut
-					
-		    		if(iface_exists(optarg, errbuf) == 0){
+		      		if(iface_exists(optarg, errbuf) == 0){
 						printf("Interface choisie correcte\n");
 						p = pcap_open_live(optarg,PACKET_SIZE ,PROMISC ,TO_MS, errbuf);
 		        		if(p != NULL){
@@ -63,8 +60,6 @@ int main(int argc, char *argv[])
 						printf("Interface incorrecte\n");
 						break;
 					}
-		    		/*
-					*/
 		        break;
 		    	case 'o':
 		        	// fichier d'entrée pour analyse offline
