@@ -28,14 +28,6 @@ void tcp(const u_char* packet){
 	if (ntohs(tcp->ack)){printf("ACK ");}
 	if (ntohs(tcp->urg)){printf("URG ");}
 	printf("\n");
-	/*
-	printf("\t\t\tFIN: %x\n",ntohs(tcp->fin));
-	printf("\t\t\tSYN: %x\n",ntohs(tcp->syn));
-	printf("\t\t\tRST: %x\n",ntohs(tcp->rst));
-	printf("\t\t\tPSH: %x\n",ntohs(tcp->psh));
-	printf("\t\t\tACK: %x\n",ntohs(tcp->ack));
-	printf("\t\t\tURG: %x\n",ntohs(tcp->urg));
-*/
 
 	printf("\t\t\tProtocole applicatif: ");
 	switch(ntohs(tcp->dest)) {

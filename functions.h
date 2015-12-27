@@ -1,5 +1,6 @@
 // structures d'entêtes
 #include <netinet/tcp.h>
+#include <string.h>
 #include "lib/ethernet.h"
 
 
@@ -10,6 +11,29 @@ void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* pack
 
 void unknown_protocol(){
 	printf("Inconnu");
+}
+
+int iface_exists(char* interface_input, char* errbuf){
+
+	pcap_if_t *alldevs;
+	pcap_if_t *d;
+	int i=0;
+
+	if (pcap_findalldevs(&alldevs, errbuf) == -1){
+		printf("Erreur lors de la récupération des interfaces: %s\n", errbuf);
+	}
+	for(d = alldevs; d != NULL; d = d->next){
+		if(strcmp(d->name, interface_input))
+			return 1;
+		else
+			return 0;
+	}
+
+	if (i == 0){
+		printf("\nAucune interface trouvée.\n");
+	}
+
+	pcap_freealldevs(alldevs);
 }
 
 /* Fonction donnant en retour l'application en fonction du port 

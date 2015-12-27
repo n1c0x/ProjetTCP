@@ -14,6 +14,7 @@
 #define TO_MS 0				// renvoie immédiatement du paquet après la capture
 #define PROMISC 1			// mode promiscious (1: on ,0: off)
 #define CNT 0				// nombre de paquets à analyser. 0: infini
+#define LOCAL "rpcap://"
 
 int main(int argc, char *argv[])
 	{
@@ -22,56 +23,69 @@ int main(int argc, char *argv[])
 		bpf_u_int32 netmask;
 		int c;		// Arguments
 		pcap_t* p;	// capture
-
 		const u_char *packet;
-	    struct pcap_pkthdr hdr;     /* pcap.h */
-	    struct ether_header *eptr;  /* net/ethernet.h */
 
+		//int iface_exists(errbuf);
 
+		
+		// Interface par défaut
 		char* inter = pcap_lookupdev(errbuf);
+
 		if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
 			perror("Impossible de récupérer l'adresse");
 		}
-
 		struct in_addr addr;
 		addr.s_addr=netaddr;
 		struct in_addr mask;
 		mask.s_addr=netmask;
 		
-		while ((c = getopt (argc, argv, "io:fv:")) != -1)
-	    switch (c)
-	    {
-	    	// soit 'i', soit 'o'
-	    	case 'i':
-	      		// utilisation de l'interface définie
-	    		// si non présent, prendre l'interface par défaut
-				/*
-	    		p = pcap_open_live(inter,PACKET_SIZE ,PROMISC ,TO_MS, errbuf);
-	        	if(p != NULL){
+		while ((c = getopt (argc, argv, "i:o:fv:")) != -1){
+		    switch (c)
+		    {
+		    	// soit 'i', soit 'o'
+		    	// case 'i|o':
+		    	// 	printf("Erreur\n");
+		    	// 	break;
+		    	case 'i':
+		      		// utilisation de l'interface définie
+		    		// si non présent, prendre l'interface par défaut
+					
+		    		if(iface_exists(optarg, errbuf) == 0){
+						printf("Interface choisie correcte\n");
+						p = pcap_open_live(optarg,PACKET_SIZE ,PROMISC ,TO_MS, errbuf);
+		        		if(p != NULL){
+		        			pcap_loop(p, CNT, got_packet, NULL);
+						}else{
+							perror("Impossible d'ouvrir le fichier");
+						}
+						pcap_close(p);
+					}else{
+						printf("Interface incorrecte\n");
+						break;
+					}
+		    		/*
+					*/
+		        break;
+		    	case 'o':
+		        	// fichier d'entrée pour analyse offline
+					p = pcap_open_offline(optarg, errbuf);
+			    	if (p != NULL){
+						pcap_loop(p, CNT, got_packet, NULL);
+					}else{
+						perror("Impossible d'ouvrir le fichier");
+					}
+					pcap_close(p);
+		        break;
+		    	case 'f':
+		    		// filtre BPF, optionnel
 
-	        	}else{
-	        		perror("Impossible de commencer la capture");
-	        	}*/
-	        break;
-	    	case 'o':
-	        	// fichier d'entrée pour analyse offline
-				p = pcap_open_offline(optarg, errbuf);
-		    	if (p != NULL){
-					pcap_loop(p, CNT, got_packet, NULL);
-				}else{
-					perror("Impossible d'ouvrir le fichier");
-				}
-				pcap_close(p);
-	        break;
-	    	case 'f':
-	    		// filtre BPF, optionnel
-
-	        break;
-	    	case 'v':
-	    	    // niveau de verbosité <1 ... 3> (1=très concis ; 2=synthétique ; 3=complet)
-	        break;
-	        default:
-	        	printf("Usage: \n");
+		        break;
+		    	case 'v':
+		    	    // niveau de verbosité <1 ... 3> (1=très concis ; 2=synthétique ; 3=complet)
+		        break;
+		        default:
+		        	printf("Usage: \n");
+		      }
 	      }
 
 		return(0);
