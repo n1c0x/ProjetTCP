@@ -29,7 +29,7 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 		printf("%x:", eth->ether_shost[i]);
 	}
 	printf("\n");
-	printf("\tProtocole: ");
+	printf("\tProtocole réseau: ");
 	packet = packet + size_ethernet;
 	switch(ntohs(eth->ether_type)) {
 

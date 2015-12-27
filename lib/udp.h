@@ -19,49 +19,39 @@ void udp(const u_char* packet){
 	printf("\t\t\tPort destination: %d\n",ntohs(udp->dest));
 	printf("\t\t\tLongueur: %d octets\n", ntohs(udp->len));
 	
+	printf("\t\t\tProtocole applicatif: ");
 	switch(ntohs(udp->dest)) {
 		case 07:
-			printf("\t\t\t");
 			printf("Echo");
 		break;
 		case 20:
-			printf("\t\t\t");
 			printf("FTP-data");
 		break;
 		case 21:
-			printf("\t\t\t");
 			printf("FTP");
 		break;
 		case 22:
-			printf("\t\t\t");
 			printf("SSH");
 		break;
 		case 23:
-			printf("\t\t\t");
 			printf("Telnet");
 		break;
 		case 25:
-			printf("\t\t\t");
 			printf("SMTP");
 		break;
 		case 53:
-			printf("\t\t\t");
 			printf("DNS");
 		break;
 		case 67:
-			printf("\t\t\t");
 			printf("BOOTPS");
 		break;
 		case 68:
-			printf("\t\t\t");
 			printf("BOOTPC");
 		break;
 		case 69:
-			printf("\t\t\t");
 			printf("TFTP");
 		break;
 		default :
-			printf("\t\t\t");
 			unknown_protocol();
 	}
 	printf("\n");

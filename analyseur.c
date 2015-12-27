@@ -38,11 +38,6 @@ int main(int argc, char *argv[])
 		struct in_addr mask;
 		mask.s_addr=netmask;
 		
-/*
-		printf("Carte réseau: %s\n", inter);
-		printf ("Réseau: %s\n", inet_ntoa(addr));
-		printf ("Masque: %s\n", inet_ntoa(mask));
-*/
 		while ((c = getopt (argc, argv, "io:fv:")) != -1)
 	    switch (c)
 	    {
@@ -62,7 +57,6 @@ int main(int argc, char *argv[])
 	        	// fichier d'entrée pour analyse offline
 				p = pcap_open_offline(optarg, errbuf);
 		    	if (p != NULL){
-					printf("Fichier ouvert\n");
 					pcap_loop(p, CNT, got_packet, NULL);
 				}else{
 					perror("Impossible d'ouvrir le fichier");

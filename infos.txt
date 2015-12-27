@@ -52,7 +52,7 @@ pcap_open_offline
 
 pcap_close ferme la capture (pour papc_open_live et pcap_open_offline)
 
-gestion des filtres (ne marque qu'avec pcap_open_live)
+gestion des filtres (ne marche qu'avec pcap_open_live)
 	pcap_compile compile le filtre.
 	char *str est une chaine de caractères qui contient le filtre. à trouver dans man tcpdump et pcap-filter
 

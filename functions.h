@@ -9,7 +9,7 @@ void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* pack
 }
 
 void unknown_protocol(){
-	printf("Unknown protocol");
+	printf("Inconnu");
 }
 
 /* Fonction donnant en retour l'application en fonction du port 

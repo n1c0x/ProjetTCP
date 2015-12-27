@@ -41,7 +41,7 @@ void ip4(const u_char* packet){
 	printf("\t\tAdresse IP destination: %s\n",inet_ntoa(addr));
 
 	packet = packet + size_ip;
-	printf("\t\tProtocole: ");
+	printf("\t\tProtocole de transport: ");
 	switch(ip->protocol) {
 
 		case 0x01:
