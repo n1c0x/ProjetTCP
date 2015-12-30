@@ -11,25 +11,25 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 
 	const struct ether_header *eth;
 	
-	printf("Heure de réception: %d\n", pkthdr->ts);
+	printf("Send/Recieve date: %d\n", pkthdr->ts);
 
 	int size_ethernet;
 	eth = (struct ether_header*)(packet);
 
 	size_ethernet = sizeof(eth->ether_dhost) + sizeof(eth->ether_shost) + sizeof(eth->ether_type);
 
-	printf("\tMAC destination: ");
+	printf("\tDestination MAC adress: ");
 	for (int i = 0; i < sizeof(eth->ether_dhost); ++i)
 	{
 		printf("%x:", eth->ether_dhost[i]);
 	}
-	printf("\n\tMAC source: ");
+	printf("\n\tSource MAC adress: ");
 	for (int i = 0; i < sizeof(eth->ether_shost); ++i)
 	{
 		printf("%x:", eth->ether_shost[i]);
 	}
 	printf("\n");
-	printf("\tProtocole réseau: ");
+	printf("\tNetwork protocol: ");
 	packet = packet + size_ethernet;
 	switch(ntohs(eth->ether_type)) {
 

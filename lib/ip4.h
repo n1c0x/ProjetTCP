@@ -36,12 +36,12 @@ void ip4(const u_char* packet){
 	size_ip = ip->ihl * 4 ;
 
 	addr.s_addr = ip->saddr;
-	printf("\t\tAdresse IP source: %s\n",inet_ntoa(addr));
+	printf("\t\tSource IP address: %s\n",inet_ntoa(addr));
 	addr.s_addr = ip->daddr;
-	printf("\t\tAdresse IP destination: %s\n",inet_ntoa(addr));
+	printf("\t\tDestination IP address: %s\n",inet_ntoa(addr));
 
 	packet = packet + size_ip;
-	printf("\t\tProtocole de transport: ");
+	printf("\t\tTransport protocol: ");
 	switch(ip->protocol) {
 
 		case 0x01:
@@ -49,11 +49,9 @@ void ip4(const u_char* packet){
 			printf("ICMP");
 		break;
 		case 0x06:
-			//printf("TCP");
 			tcp(packet);
 		break;
 		case 0x11:
-			//printf("UDP");
 			udp(packet);
 		break;
 		case 0x3A:

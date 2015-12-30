@@ -8,18 +8,11 @@ void udp(const u_char* packet){
 	
 	udp = (struct udphdr*)(packet);
 
-/*
-	printf("source port: %x\n", ntohs(udp->source));
-	printf("dest port: %x\n", ntohs(udp->dest));
-	printf("length: %x\n", ntohs(udp->len));
-	printf("checksum: %x\n", ntohs(udp->check));
-*/
-
-	printf("\t\t\tPort source: %d\n",ntohs(udp->source));
-	printf("\t\t\tPort destination: %d\n",ntohs(udp->dest));
-	printf("\t\t\tLongueur: %d octets\n", ntohs(udp->len));
+	printf("\t\t\tSource Port: %d\n",ntohs(udp->source));
+	printf("\t\t\tDestination Port: %d\n",ntohs(udp->dest));
+	printf("\t\t\tLength: %d Bytes\n", ntohs(udp->len));
 	
-	printf("\t\t\tProtocole applicatif: ");
+	printf("\t\t\tApplication protocol: ");
 	switch(ntohs(udp->dest)) {
 		case 07:
 			printf("Echo");

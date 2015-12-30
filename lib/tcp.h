@@ -8,17 +8,10 @@ void tcp(const u_char* packet){
 	
 	tcp = (struct tcphdr*)(packet);
 
-/*
-	printf("source port: %x\n", ntohs(udp->source));
-	printf("dest port: %x\n", ntohs(udp->dest));
-	printf("length: %x\n", ntohs(udp->len));
-	printf("checksum: %x\n", ntohs(udp->check));
-*/
-
-	printf("\t\t\tPort source: %d\n",ntohs(tcp->source));
-	printf("\t\t\tPort destination: %d\n",ntohs(tcp->dest));
-	printf("\t\t\tNuméro de sequence: %d\n", ntohs(tcp->seq));
-	printf("\t\t\tNuméro d'acquittement: %d\n", ntohs(tcp->seq));
+	printf("\t\t\tSource port: %d\n",ntohs(tcp->source));
+	printf("\t\t\tDestination port: %d\n",ntohs(tcp->dest));
+	printf("\t\t\tSequence number: %d\n", ntohs(tcp->seq));
+	printf("\t\t\tAcknowledge number: %d\n", ntohs(tcp->seq));
 
 	printf("\t\t\tFlags: ");
 	if (ntohs(tcp->fin)){printf("FIN ");}
@@ -29,7 +22,7 @@ void tcp(const u_char* packet){
 	if (ntohs(tcp->urg)){printf("URG ");}
 	printf("\n");
 
-	printf("\t\t\tProtocole applicatif: ");
+	printf("\t\t\tApplication protocol: ");
 	switch(ntohs(tcp->dest)) {
 		case 07:
 			printf("Echo");

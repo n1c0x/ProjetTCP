@@ -3,6 +3,12 @@
 #include <string.h>
 #include "lib/ethernet.h"
 
+#define PACKET_SIZE 1514 	// taille du paquet
+#define TO_MS 0				// renvoie immédiatement du paquet après la capture
+#define PROMISC 1			// mode promiscious (1: on ,0: off)
+#define CNT 0				// nombre de paquets à analyser. 0: infini
+
+
 
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet);
@@ -10,17 +16,22 @@ void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* pack
 }
 
 void unknown_protocol(){
-	printf("Inconnu");
+	printf("Unknown");
+}
+void error(char* reason){
+	printf("Error: %s\n", reason);
+}
+void usage(){
+	printf("Usage: ./analyseur {-i <interface>,-o <capture file>}, -f <BPF filter> -v <verbose level>\n");
 }
 
 int iface_exists(char* interface_input, char* errbuf){
-
 	pcap_if_t *alldevs;
 	pcap_if_t *d;
 	int i=0;
 
 	if (pcap_findalldevs(&alldevs, errbuf) == -1){
-		printf("Erreur lors de la récupération des interfaces: %s\n", errbuf);
+		error("Unable to use the given interface");
 	}
 	for(d = alldevs; d != NULL; d = d->next){
 		if(strcmp(d->name, interface_input))
@@ -30,12 +41,40 @@ int iface_exists(char* interface_input, char* errbuf){
 	}
 
 	if (i == 0){
-		printf("\nAucune interface trouvée.\n");
+		error("No interface found.\n");
 	}
 
 	pcap_freealldevs(alldevs);
 }
 
+void sniff_online(char* arg_i, char* errbuf){
+	pcap_t* p;	// capture
+	if(iface_exists(arg_i, errbuf) == 0){
+		printf("Chosen interface OK\n");
+		p = pcap_open_live(arg_i,PACKET_SIZE ,PROMISC ,TO_MS, errbuf);
+		if(p != NULL){
+			pcap_loop(p, CNT, got_packet, NULL);
+		}else{
+			error("Unable to open stream");
+		}
+		pcap_close(p);
+	}else{
+		error("Chosen interface incorrect. Please chose another interface");
+	}
+}
+
+void sniff_offline(char* arg_o,char* errbuf){
+	pcap_t* p;	// capture
+	p = pcap_open_offline(arg_o, errbuf);
+	if (p != NULL){
+		pcap_loop(p, CNT, got_packet, NULL);
+	}else{
+		error("Unable to open capture file");
+	}
+	pcap_close(p);
+}
+
+// TO DO
 /* Fonction donnant en retour l'application en fonction du port 
 char* set_tcp_ports(int port){
 	char* ports[65536];
@@ -57,7 +96,7 @@ char* set_udp_ports(int port){
 	port = ports[port];
 	return port;
 }
-
+Fonction donnant en retour le flag en fonction de l'identifiant
 char* set_tcp_flags(int port){
 	char* flags[10];
 	flags[0] = "Reservé";

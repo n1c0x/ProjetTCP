@@ -16,6 +16,10 @@
 #define CNT 0				// nombre de paquets à analyser. 0: infini
 #define LOCAL "rpcap://"
 
+void error(char* reason);
+void sniff_online(char* arg_i, char* errbuf);
+void sniff_offline(char* arg_o, char* errbuf);
+
 int main(int argc, char *argv[])
 	{
 		char errbuf[PCAP_ERRBUF_SIZE];
@@ -31,6 +35,7 @@ int main(int argc, char *argv[])
 		// Interface par défaut
 		char* inter = pcap_lookupdev(errbuf);
 
+		/*
 		if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
 			perror("Impossible de récupérer l'adresse");
 		}
@@ -38,50 +43,50 @@ int main(int argc, char *argv[])
 		addr.s_addr=netaddr;
 		struct in_addr mask;
 		mask.s_addr=netmask;
+		*/
+		// Initialisation des flags permettant de controler l'utilisation des options
+		int flag_i = 0;
+		int flag_o = 0;
+		int flag_f = 0;
+		int flag_v = 0;
+		char* arg_i;
+		char* arg_o;
+		char* arg_f;
+		char* arg_v;
 		
 		while ((c = getopt (argc, argv, "i:o:fv:")) != -1){
 		    switch (c)
 		    {
-		    	// soit 'i', soit 'o'
-		    	// case 'i|o':
-		    	// 	printf("Erreur\n");
-		    	// 	break;
 		    	case 'i':
-		      		if(iface_exists(optarg, errbuf) == 0){
-						printf("Interface choisie correcte\n");
-						p = pcap_open_live(optarg,PACKET_SIZE ,PROMISC ,TO_MS, errbuf);
-		        		if(p != NULL){
-		        			pcap_loop(p, CNT, got_packet, NULL);
-						}else{
-							perror("Impossible d'ouvrir le fichier");
-						}
-						pcap_close(p);
-					}else{
-						printf("Interface incorrecte\n");
-						break;
-					}
-		        break;
+		    		flag_i = 1;
+		    		arg_i = optarg;
+					break;
 		    	case 'o':
-		        	// fichier d'entrée pour analyse offline
-					p = pcap_open_offline(optarg, errbuf);
-			    	if (p != NULL){
-						pcap_loop(p, CNT, got_packet, NULL);
-					}else{
-						perror("Impossible d'ouvrir le fichier");
-					}
-					pcap_close(p);
-		        break;
+		    		flag_o = 1;
+		    		arg_o = optarg;
+					break;
 		    	case 'f':
+		    		flag_f = 1;
+		    		arg_f = optarg;
 		    		// filtre BPF, optionnel
 
 		        break;
 		    	case 'v':
+		    		flag_v = 1;
+		    		arg_v = optarg;
 		    	    // niveau de verbosité <1 ... 3> (1=très concis ; 2=synthétique ; 3=complet)
 		        break;
 		        default:
-		        	printf("Usage: \n");
-		      }
-	      }
+		        	usage();
+			}
+		}
+		if (flag_o && flag_i){
+			error("-i and -o options can't be used simultaneously");
+		}else if (flag_i){
+			sniff_online(arg_i, errbuf);
+		} else if (flag_o){
+			sniff_offline(arg_o, errbuf);
+		}
 
 		return(0);
 	}
