@@ -1,4 +1,5 @@
 #include <net/ethernet.h>
+#include <time.h>
 #include "ip4.h"
 #include "ip6.h"
 
@@ -11,7 +12,8 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 
 	const struct ether_header *eth;
 	
-	printf("Send/Recieve date: %d\n", pkthdr->ts);
+	//printf("Send/Recieve date: %d\n", pkthdr->ts);
+	printf("%d bytes (%d bits) recieved on %s",pkthdr->caplen, pkthdr->caplen * 8, ctime((const time_t*)&pkthdr->ts));
 
 	int size_ethernet;
 	eth = (struct ether_header*)(packet);

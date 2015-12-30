@@ -29,9 +29,6 @@ int main(int argc, char *argv[])
 		pcap_t* p;	// capture
 		const u_char *packet;
 
-		//int iface_exists(errbuf);
-
-		
 		// Interface par défaut
 		char* inter = pcap_lookupdev(errbuf);
 
