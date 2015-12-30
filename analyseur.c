@@ -7,14 +7,10 @@
 #include <errno.h>
 #include <unistd.h>
 #include "functions.h"
+#include "lib/var_global.h"
 
 
-// définition des constantes
-#define PACKET_SIZE 1514 	// taille du paquet
-#define TO_MS 0				// renvoie immédiatement du paquet après la capture
-#define PROMISC 1			// mode promiscious (1: on ,0: off)
-#define CNT 0				// nombre de paquets à analyser. 0: infini
-#define LOCAL "rpcap://"
+//#define LOCAL "rpcap://"
 
 void error(char* reason);
 void sniff_online(char* arg_i, char* errbuf);
@@ -49,7 +45,6 @@ int main(int argc, char *argv[])
 		char* arg_i;
 		char* arg_o;
 		char* arg_f;
-		char* arg_v;
 		
 		while ((c = getopt (argc, argv, "i:o:fv:")) != -1){
 		    switch (c)
@@ -70,13 +65,15 @@ int main(int argc, char *argv[])
 		        break;
 		    	case 'v':
 		    		flag_v = 1;
-		    		arg_v = optarg;
+					arg_v = atoi(strdup(optarg));
+		    		//arg_v = optarg;
 		    	    // niveau de verbosité <1 ... 3> (1=très concis ; 2=synthétique ; 3=complet)
 		        break;
 		        default:
 		        	usage();
 			}
 		}
+
 		if (flag_o && flag_i){
 			error("-i and -o options can't be used simultaneously");
 		}else if (flag_i){

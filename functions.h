@@ -2,12 +2,14 @@
 #include <netinet/tcp.h>
 #include <string.h>
 #include "lib/ethernet.h"
+#include "lib/var_global.h"
 
+/*
 #define PACKET_SIZE 1514 	// taille du paquet
 #define TO_MS 0				// renvoie immédiatement du paquet après la capture
 #define PROMISC 1			// mode promiscious (1: on ,0: off)
 #define CNT 0				// nombre de paquets à analyser. 0: infini
-
+*/
 
 
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet){
