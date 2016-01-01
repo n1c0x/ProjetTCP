@@ -11,10 +11,7 @@
 
 
 //#define LOCAL "rpcap://"
-
-void error(char* reason);
-void sniff_online(char* arg_i, char* errbuf);
-void sniff_offline(char* arg_o, char* errbuf);
+int arg_v;
 
 int main(int argc, char *argv[])
 	{
@@ -66,7 +63,6 @@ int main(int argc, char *argv[])
 		    	case 'v':
 		    		flag_v = 1;
 					arg_v = atoi(strdup(optarg));
-		    		//arg_v = optarg;
 		    	    // niveau de verbosité <1 ... 3> (1=très concis ; 2=synthétique ; 3=complet)
 		        break;
 		        default:

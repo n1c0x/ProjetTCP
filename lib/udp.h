@@ -1,18 +1,49 @@
 #include <netinet/udp.h>
+//#include "functions.h"
 
 void unknown_protocol();
+void line(char* separator, int length);
+void show_udp_ports(const struct udphdr *udp);
+void show_udp_protocol(const struct udphdr *udp);
+void show_udp_length(const struct udphdr *udp);
+
+int arg_v;
 
 void udp(const u_char* packet){
-	printf("UDP\n");
+	printf("UDP");
 	const struct udphdr *udp;
-	
 	udp = (struct udphdr*)(packet);
 
+	if (arg_v == 1){
+		show_udp_protocol(udp);
+	}else if (arg_v == 2){
+		show_udp_ports(udp);
+		show_udp_length(udp);
+	}else{
+		show_udp_ports(udp);
+		show_udp_length(udp);
+		line("-",70);
+		show_udp_protocol(udp);
+	}
+	printf("\n");
+}
+
+void show_udp_ports(const struct udphdr *udp){
+	printf("\n");
 	printf("\t\t\tSource Port: %d\n",ntohs(udp->source));
 	printf("\t\t\tDestination Port: %d\n",ntohs(udp->dest));
+}
+
+void show_udp_length(const struct udphdr *udp){
 	printf("\t\t\tLength: %d Bytes\n", ntohs(udp->len));
-	
-	printf("\t\t\tApplication protocol: ");
+}
+
+void show_udp_protocol(const struct udphdr *udp){
+	if (arg_v != 1){
+		printf("\t\t\tApplication protocol: ");
+	}else{
+		printf(": ");
+	}
 	switch(ntohs(udp->dest)) {
 		case 07:
 			printf("Echo");
@@ -47,5 +78,4 @@ void udp(const u_char* packet){
 		default :
 			unknown_protocol();
 	}
-	printf("\n");
 }

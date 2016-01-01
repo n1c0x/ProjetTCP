@@ -1,18 +1,39 @@
 #include <netinet/tcp.h>
+//#include "functions.h"
 
 void unknown_protocol();
+void show_tcp_ports(const struct tcphdr *tcp);
+void show_tcp_seq_ack(const struct tcphdr *tcp);
+void show_tcp_protocol(const struct tcphdr *tcp);
+void show_tcp_flags(const struct tcphdr *tcp);
+
 
 void tcp(const u_char* packet){
-	printf("TCP\n");
+	printf("TCP");
 	const struct tcphdr *tcp;
-	
 	tcp = (struct tcphdr*)(packet);
 
-	printf("\t\t\tSource port: %d\n",ntohs(tcp->source));
-	printf("\t\t\tDestination port: %d\n",ntohs(tcp->dest));
-	printf("\t\t\tSequence number: %d\n", ntohs(tcp->seq));
-	printf("\t\t\tAcknowledge number: %d\n", ntohs(tcp->seq));
+	if (arg_v == 1){
+		show_tcp_protocol(tcp);
+	}else if (arg_v == 2){
+		show_tcp_ports(tcp);
+	}else{
+		show_tcp_ports(tcp);
+		show_tcp_seq_ack(tcp);
+		show_tcp_flags(tcp);
+		line("-",70);
+		show_tcp_protocol(tcp);
+	}
 
+}
+
+void show_tcp_ports(const struct tcphdr *tcp){
+	printf("\n");
+	printf("\t\t\tSource Port: %d\n",ntohs(tcp->source));
+	printf("\t\t\tDestination Port: %d\n",ntohs(tcp->dest));
+}
+
+void show_tcp_flags(const struct tcphdr *tcp){
 	printf("\t\t\tFlags: ");
 	if (ntohs(tcp->fin)){printf("FIN ");}
 	if (ntohs(tcp->syn)){printf("SYN ");}
@@ -21,8 +42,18 @@ void tcp(const u_char* packet){
 	if (ntohs(tcp->ack)){printf("ACK ");}
 	if (ntohs(tcp->urg)){printf("URG ");}
 	printf("\n");
+}
 
-	printf("\t\t\tApplication protocol: ");
+void show_tcp_seq_ack(const struct tcphdr *tcp){
+	printf("\t\t\tSequence number: %d\n", ntohs(tcp->seq));
+	printf("\t\t\tAcknowledge number: %d\n", ntohs(tcp->seq));
+}
+void show_tcp_protocol(const struct tcphdr *tcp){
+	if (arg_v != 1){
+		printf("\t\t\tApplication protocol: ");
+	}else{
+		printf(": ");
+	}
 	switch(ntohs(tcp->dest)) {
 		case 07:
 			printf("Echo");
@@ -69,5 +100,4 @@ void tcp(const u_char* packet){
 		default :
 			unknown_protocol();
 	}
-	printf("\n");
 }

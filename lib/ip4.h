@@ -2,46 +2,71 @@
 #include <arpa/inet.h>
 #include "udp.h"
 #include "tcp.h"
+//#include "functions.h"
 
 void unknown_protocol();
+void line(char* separator, int length);
+void show_ip(const struct iphdr *ip,struct in_addr addr);
+void show_ip_protocol(const u_char* packet, const struct iphdr *ip, int size_ip);
+void show_ip_else(const struct iphdr *ip);
+
+int arg_v;
 
 void ip4(const u_char* packet){
 	/* Déclarations des fonctions utilisées */
 	void udp(const u_char* packet);
 	void tcp(const u_char* packet);
 
-
-	printf("IPv4\n");
 	const struct iphdr *ip;
 	struct in_addr addr;
 	
 	int size_ip = sizeof(ip);
 
 	ip = (struct iphdr*)(packet);
-/*
-	printf("version: %x\n", ip->version);
-	printf("header length: %x\n", ip->ihl);
-	printf("type of service: %x\n", ip->tos);
-	printf("total length: %x\n", ntohs(ip->tot_len));
-	printf("identification: %x\n", ntohs(ip->id));
-	printf("offset: %x\n", ip->frag_off);
-	printf("time to live: %x\n", ip->ttl);
-	printf("protocol: %x\n", ip->protocol);
-	printf("checksum: %x\n", ntohs(ip->check));
-	printf("IP src: %x\n", ntohl(ip->saddr));
-	printf("IP dst: %x\n", ntohl(ip->daddr));
-*/
 
 	/* On multiplie par 4 parce que la taille du champ IHL est de 4 bits */
 	size_ip = ip->ihl * 4 ;
 
-	addr.s_addr = ip->saddr;
-	printf("\t\tSource IP address: %s\n",inet_ntoa(addr));
-	addr.s_addr = ip->daddr;
-	printf("\t\tDestination IP address: %s\n",inet_ntoa(addr));
+	if (arg_v == 1){
+		show_ip(ip, addr);
+		show_ip_protocol(packet, ip, size_ip);
+	}else if (arg_v == 2){
+		show_ip(ip, addr);
+		line("-",70);
+		show_ip_protocol(packet, ip, size_ip);
+	}else{
+		show_ip(ip, addr);
+		show_ip_else(ip);
+		line("-",70);
+		show_ip_protocol(packet, ip, size_ip);
+	}
+	
+	printf("\n");
+}
 
+void show_ip(const struct iphdr *ip,struct in_addr addr){
+	if (arg_v == 1)
+	{
+		addr.s_addr = ip->saddr;
+		printf("From %s ",inet_ntoa(addr));
+		addr.s_addr = ip->daddr;
+		printf("to %s",inet_ntoa(addr));
+	}else{
+		printf("IPv4\n");
+		addr.s_addr = ip->saddr;
+		printf("\t\tSource IP address: %s\n",inet_ntoa(addr));
+		addr.s_addr = ip->daddr;
+		printf("\t\tDestination IP address: %s\n",inet_ntoa(addr));
+	}
+}
+
+void show_ip_protocol(const u_char* packet, const struct iphdr *ip, int size_ip){
 	packet = packet + size_ip;
-	printf("\t\tTransport protocol: ");
+	if (arg_v != 1){
+		printf("\t\tTransport protocol: ");
+	}else{
+		printf(" over ");
+	}
 	switch(ip->protocol) {
 
 		case 0x01:
@@ -70,5 +95,14 @@ void ip4(const u_char* packet){
 			printf("\t\t");
 			unknown_protocol();
 	}
-	printf("\n");
+}
+
+void show_ip_else(const struct iphdr *ip){
+	printf("\t\tIP Header Length: %d Bytes\n", ip->ihl);
+	printf("\t\tType Of Service: %x\n", ip->tos);
+	printf("\t\tTotal Length: %d Bytes\n", ntohs(ip->tot_len));
+	printf("\t\tIdentification: 0x%x\n", ntohs(ip->id));
+	printf("\t\tOffset: %d\n", ip->frag_off);
+	printf("\t\tTime To Live: %d Hops\n", ip->ttl);
+	printf("\t\tChecksum: 0x%x\n", ntohs(ip->check));
 }

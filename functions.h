@@ -1,15 +1,17 @@
 // structures d'entêtes
 #include <netinet/tcp.h>
 #include <string.h>
-#include "lib/ethernet.h"
 #include "lib/var_global.h"
+#include "lib/ethernet.h"
 
-/*
-#define PACKET_SIZE 1514 	// taille du paquet
-#define TO_MS 0				// renvoie immédiatement du paquet après la capture
-#define PROMISC 1			// mode promiscious (1: on ,0: off)
-#define CNT 0				// nombre de paquets à analyser. 0: infini
-*/
+void unknown_protocol();
+void error(char* reason);
+void usage();
+void line(char* separator, int length);
+int iface_exists(char* interface_input, char* errbuf);
+void sniff_online(char* arg_i, char* errbuf);
+void sniff_offline(char* arg_o, char* errbuf);
+void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet);
 
 
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet){
@@ -25,6 +27,13 @@ void error(char* reason){
 }
 void usage(){
 	printf("Usage: ./analyseur {-i <interface>,-o <capture file>}, -f <BPF filter> -v <verbose level>\n");
+}
+void line(char* separator, int length){
+	for (int i = 0; i < length; ++i)
+	{
+		printf("%s", separator);
+	}
+	printf("\n");
 }
 
 int iface_exists(char* interface_input, char* errbuf){
