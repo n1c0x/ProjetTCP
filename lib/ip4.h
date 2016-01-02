@@ -7,7 +7,7 @@
 void unknown_protocol();
 void line(char* separator, int length);
 void show_ip(const struct iphdr *ip,struct in_addr addr);
-void show_ip_protocol(const u_char* packet, const struct iphdr *ip, int size_ip);
+void show_ip_protocol(const u_char* packet, const struct iphdr *ip);
 void show_ip_else(const struct iphdr *ip);
 
 int arg_v;
@@ -26,19 +26,20 @@ void ip4(const u_char* packet){
 
 	/* On multiplie par 4 parce que la taille du champ IHL est de 4 bits */
 	size_ip = ip->ihl * 4 ;
+	packet = packet + size_ip;
 
 	if (arg_v == 1){
 		show_ip(ip, addr);
-		show_ip_protocol(packet, ip, size_ip);
+		show_ip_protocol(packet, ip);
 	}else if (arg_v == 2){
 		show_ip(ip, addr);
 		line("-",70);
-		show_ip_protocol(packet, ip, size_ip);
+		show_ip_protocol(packet, ip);
 	}else{
 		show_ip(ip, addr);
 		show_ip_else(ip);
 		line("-",70);
-		show_ip_protocol(packet, ip, size_ip);
+		show_ip_protocol(packet, ip);
 	}
 	
 	printf("\n");
@@ -60,8 +61,8 @@ void show_ip(const struct iphdr *ip,struct in_addr addr){
 	}
 }
 
-void show_ip_protocol(const u_char* packet, const struct iphdr *ip, int size_ip){
-	packet = packet + size_ip;
+void show_ip_protocol(const u_char* packet, const struct iphdr *ip){
+	
 	if (arg_v != 1){
 		printf("\t\tTransport protocol: ");
 	}else{

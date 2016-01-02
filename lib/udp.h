@@ -25,7 +25,6 @@ void udp(const u_char* packet){
 		line("-",70);
 		show_udp_protocol(udp);
 	}
-	printf("\n");
 }
 
 void show_udp_ports(const struct udphdr *udp){
@@ -35,7 +34,7 @@ void show_udp_ports(const struct udphdr *udp){
 }
 
 void show_udp_length(const struct udphdr *udp){
-	printf("\t\t\tLength: %d Bytes\n", ntohs(udp->len));
+	printf("\t\t\tLength: %d Bytes \n", ntohs(udp->len));
 }
 
 void show_udp_protocol(const struct udphdr *udp){

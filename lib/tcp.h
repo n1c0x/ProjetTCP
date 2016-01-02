@@ -3,9 +3,10 @@
 
 void unknown_protocol();
 void show_tcp_ports(const struct tcphdr *tcp);
-void show_tcp_seq_ack(const struct tcphdr *tcp);
+void show_tcp_else(const struct tcphdr *tcp);
 void show_tcp_protocol(const struct tcphdr *tcp);
 void show_tcp_flags(const struct tcphdr *tcp);
+void show_tcp_options(const struct tcphdr *tcp);
 
 
 void tcp(const u_char* packet){
@@ -19,10 +20,11 @@ void tcp(const u_char* packet){
 		show_tcp_ports(tcp);
 	}else{
 		show_tcp_ports(tcp);
-		show_tcp_seq_ack(tcp);
+		show_tcp_else(tcp);
 		show_tcp_flags(tcp);
 		line("-",70);
 		show_tcp_protocol(tcp);
+		show_tcp_options(tcp);
 	}
 
 }
@@ -44,10 +46,19 @@ void show_tcp_flags(const struct tcphdr *tcp){
 	printf("\n");
 }
 
-void show_tcp_seq_ack(const struct tcphdr *tcp){
-	printf("\t\t\tSequence number: %d\n", ntohs(tcp->seq));
-	printf("\t\t\tAcknowledge number: %d\n", ntohs(tcp->seq));
+void show_tcp_else(const struct tcphdr *tcp){
+	printf("\t\t\tData Offset: %d words (Header Length = %d Bytes)\n", tcp->doff, (tcp->doff*32)/8);
+	printf("\t\t\tSequence number: 0x%x\n", ntohl(tcp->seq));
+	printf("\t\t\tAcknowledge number: 0x%x\n", ntohl(tcp->ack_seq));
+	printf("\t\t\tWindow Size: 0x%x\n", ntohs(tcp->window));
+	printf("\t\t\tChecksum: 0x%x\n", ntohs(tcp->check));
+	printf("\t\t\tUrgent Pointer: %d\n", ntohs(tcp->urg_ptr));
 }
+
+void show_tcp_options(const struct tcphdr *tcp){
+
+}
+
 void show_tcp_protocol(const struct tcphdr *tcp){
 	if (arg_v != 1){
 		printf("\t\t\tApplication protocol: ");

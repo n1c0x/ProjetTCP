@@ -63,8 +63,7 @@ int main(int argc, char *argv[])
 		    	case 'v':
 		    		flag_v = 1;
 					arg_v = atoi(strdup(optarg));
-		    	    // niveau de verbosité <1 ... 3> (1=très concis ; 2=synthétique ; 3=complet)
-		        break;
+				break;
 		        default:
 		        	usage();
 			}
@@ -76,6 +75,8 @@ int main(int argc, char *argv[])
 			sniff_online(arg_i, errbuf);
 		} else if (flag_o){
 			sniff_offline(arg_o, errbuf);
+		} else if(flag_f){
+			filter(arg_f, errbuf);
 		}
 
 		return(0);

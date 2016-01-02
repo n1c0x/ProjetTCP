@@ -1,4 +1,3 @@
-// structures d'entêtes
 #include <netinet/tcp.h>
 #include <string.h>
 #include "lib/var_global.h"
@@ -11,7 +10,9 @@ void line(char* separator, int length);
 int iface_exists(char* interface_input, char* errbuf);
 void sniff_online(char* arg_i, char* errbuf);
 void sniff_offline(char* arg_o, char* errbuf);
+void filter(char* arg_f, char* errbuf);
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet);
+
 
 
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet){
@@ -29,8 +30,7 @@ void usage(){
 	printf("Usage: ./analyseur {-i <interface>,-o <capture file>}, -f <BPF filter> -v <verbose level>\n");
 }
 void line(char* separator, int length){
-	for (int i = 0; i < length; ++i)
-	{
+	for (int i = 0; i < length; ++i){
 		printf("%s", separator);
 	}
 	printf("\n");
@@ -83,6 +83,10 @@ void sniff_offline(char* arg_o,char* errbuf){
 		error("Unable to open capture file");
 	}
 	pcap_close(p);
+}
+
+void filter(char* arg_f, char* errbuf){
+	printf("%s\n", arg_f);
 }
 
 // TO DO
