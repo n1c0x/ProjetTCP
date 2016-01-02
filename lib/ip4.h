@@ -41,7 +41,6 @@ void ip4(const u_char* packet){
 		line("-",70);
 		show_ip_protocol(packet, ip);
 	}
-	
 	printf("\n");
 }
 
@@ -71,8 +70,7 @@ void show_ip_protocol(const u_char* packet, const struct iphdr *ip){
 	switch(ip->protocol) {
 
 		case 0x01:
-			printf("\t\t");
-			printf("ICMP");
+			printf("ICMP\n");
 		break;
 		case 0x06:
 			tcp(packet);
@@ -81,19 +79,15 @@ void show_ip_protocol(const u_char* packet, const struct iphdr *ip){
 			udp(packet);
 		break;
 		case 0x3A:
-			printf("\t\t");
-			printf("IPv6-ICMP");
+			printf("IPv6-ICMP\n");
 		break;
 		case 0x73:
-			printf("\t\t");
-			printf("L2TP");
+			printf("L2TP\n");
 		break;
 		case 0x84:
-			printf("\t\t");
-			printf("SCTP");
+			printf("SCTP\n");
 		break;
 		default :
-			printf("\t\t");
 			unknown_protocol();
 	}
 }

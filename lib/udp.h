@@ -45,36 +45,69 @@ void show_udp_protocol(const struct udphdr *udp){
 	}
 	switch(ntohs(udp->dest)) {
 		case 07:
-			printf("Echo");
+			printf("Echo\n");
 		break;
 		case 20:
-			printf("FTP-data");
+			printf("FTP-data\n");
 		break;
 		case 21:
-			printf("FTP");
+			printf("FTP\n");
 		break;
 		case 22:
-			printf("SSH");
+			printf("SSH\n");
 		break;
 		case 23:
-			printf("Telnet");
+			printf("Telnet\n");
 		break;
 		case 25:
-			printf("SMTP");
+			printf("SMTP\n");
 		break;
 		case 53:
-			printf("DNS");
+			printf("DNS\n");
 		break;
 		case 67:
-			printf("BOOTPS");
+			printf("BOOTPS\n");
 		break;
 		case 68:
-			printf("BOOTPC");
+			printf("BOOTPC\n");
 		break;
 		case 69:
-			printf("TFTP");
+			printf("TFTP\n");
 		break;
 		default :
-			unknown_protocol();
+			switch(ntohs(udp->source)) {
+				case 07:
+					printf("Echo\n");
+				break;
+				case 20:
+					printf("FTP-data\n");
+				break;
+				case 21:
+					printf("FTP\n");
+				break;
+				case 22:
+					printf("SSH\n");
+				break;
+				case 23:
+					printf("Telnet\n");
+				break;
+				case 25:
+					printf("SMTP\n");
+				break;
+				case 53:
+					printf("DNS\n");
+				break;
+				case 67:
+					printf("BOOTPS\n");
+				break;
+				case 68:
+					printf("BOOTPC\n");
+				break;
+				case 69:
+					printf("TFTP\n");
+				break;
+				default :
+					unknown_protocol();
+			}
 	}
 }

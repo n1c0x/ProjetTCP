@@ -43,37 +43,37 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
 	switch(ntohs(eth->ether_type)) {
 
 		case 0x0200:
-			printf("Xerox PUP");
+			printf("Xerox PUP\n");
 		break;
 		case 0x0500:
-			printf("Sprite");
+			printf("Sprite\n");
 		break;
 		case 0x0800:
 			ip4(packet);
 		break;
 		case 0x0806:
-			printf("ARP");
+			printf("ARP\n");
 		break;
 		case 0x8035:
-			printf("Reverse ARP");
+			printf("Reverse ARP\n");
 		break;
 		case 0x80B9:
-			printf("AppleTalk");
+			printf("AppleTalk\n");
 		break;
 		case 0x80F3:
-			printf("AppleTalk ARP");
+			printf("AppleTalk ARP\n");
 		break;
 		case 0x8100:
-			printf("Tag VLAN");
+			printf("Tag VLAN\n");
 		break;
 		case 0x8137:
-			printf("IPX");
+			printf("IPX\n");
 		break;
 		case 0x86DD:
 			ip6(packet);
 		break;
 		case 0x9000:
-			printf("Tests");
+			printf("Tests\n");
 		break;		
 		default :
 			unknown_protocol();

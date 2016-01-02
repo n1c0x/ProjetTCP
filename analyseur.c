@@ -16,24 +16,11 @@ int arg_v;
 int main(int argc, char *argv[])
 	{
 		char errbuf[PCAP_ERRBUF_SIZE];
-		bpf_u_int32 netaddr;
-		bpf_u_int32 netmask;
 		int c;		// Arguments
-		pcap_t* p;	// capture
-		const u_char *packet;
 
 		// Interface par défaut
 		char* inter = pcap_lookupdev(errbuf);
 
-		/*
-		if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
-			perror("Impossible de récupérer l'adresse");
-		}
-		struct in_addr addr;
-		addr.s_addr=netaddr;
-		struct in_addr mask;
-		mask.s_addr=netmask;
-		*/
 		// Initialisation des flags permettant de controler l'utilisation des options
 		int flag_i = 0;
 		int flag_o = 0;
@@ -43,7 +30,7 @@ int main(int argc, char *argv[])
 		char* arg_o;
 		char* arg_f;
 		
-		while ((c = getopt (argc, argv, "i:o:fv:")) != -1){
+		while ((c = getopt (argc, argv, "i:o:f:v:")) != -1){
 		    switch (c)
 		    {
 		    	case 'i':
@@ -58,7 +45,6 @@ int main(int argc, char *argv[])
 		    		flag_f = 1;
 		    		arg_f = optarg;
 		    		// filtre BPF, optionnel
-
 		        break;
 		    	case 'v':
 		    		flag_v = 1;
@@ -71,12 +57,19 @@ int main(int argc, char *argv[])
 
 		if (flag_o && flag_i){
 			error("-i and -o options can't be used simultaneously");
+		} else if(flag_i && flag_f){
+			if (sniff_online(arg_i, errbuf, inter)){
+				sudo();
+			}
+			filter(arg_f, errbuf, inter);
 		}else if (flag_i){
-			sniff_online(arg_i, errbuf);
-		} else if (flag_o){
+			if (sniff_online(arg_i, errbuf, inter)){
+				sudo();
+			}
+		} else if (flag_o && flag_f){
+			error("A filter can't be applied on already captured packets");
+		} else if(flag_o){
 			sniff_offline(arg_o, errbuf);
-		} else if(flag_f){
-			filter(arg_f, errbuf);
 		}
 
 		return(0);

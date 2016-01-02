@@ -6,11 +6,12 @@
 void unknown_protocol();
 void error(char* reason);
 void usage();
+void sudo();
 void line(char* separator, int length);
 int iface_exists(char* interface_input, char* errbuf);
-void sniff_online(char* arg_i, char* errbuf);
+int sniff_online(char* arg_i, char* errbuf, char* inter);
 void sniff_offline(char* arg_o, char* errbuf);
-void filter(char* arg_f, char* errbuf);
+void filter(char* arg_f, char* errbuf, char* inter);
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet);
 
 
@@ -21,7 +22,7 @@ void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* pack
 }
 
 void unknown_protocol(){
-	printf("Unknown");
+	printf("Unknown\n");
 }
 void error(char* reason){
 	printf("Error: %s\n", reason);
@@ -34,6 +35,9 @@ void line(char* separator, int length){
 		printf("%s", separator);
 	}
 	printf("\n");
+}
+void sudo(){
+	printf("Use sudo to launch the program\n");
 }
 
 int iface_exists(char* interface_input, char* errbuf){
@@ -58,23 +62,33 @@ int iface_exists(char* interface_input, char* errbuf){
 	pcap_freealldevs(alldevs);
 }
 
-void sniff_online(char* arg_i, char* errbuf){
+int sniff_online(char* arg_i, char* errbuf, char* inter){
 	pcap_t* p;	// capture
+
+	// En cas d'absence de valeur pour l'option -i, l'interface par défaut est utilisée
+	if (arg_i != NULL){
+		arg_i = inter;
+	}
 	if(iface_exists(arg_i, errbuf) == 0){
 		printf("Chosen interface OK\n");
 		p = pcap_open_live(arg_i,PACKET_SIZE ,PROMISC ,TO_MS, errbuf);
 		if(p != NULL){
 			pcap_loop(p, CNT, got_packet, NULL);
+			pcap_close(p);
+			return 0;
 		}else{
 			error("Unable to open stream");
+			return 1;
 		}
-		pcap_close(p);
 	}else{
 		error("Chosen interface incorrect. Please chose another interface");
+		return 1;
 	}
+	
+	
 }
 
-void sniff_offline(char* arg_o,char* errbuf){
+void sniff_offline(char* arg_o, char* errbuf){
 	pcap_t* p;	// capture
 	p = pcap_open_offline(arg_o, errbuf);
 	if (p != NULL){
@@ -85,8 +99,35 @@ void sniff_offline(char* arg_o,char* errbuf){
 	pcap_close(p);
 }
 
-void filter(char* arg_f, char* errbuf){
-	printf("%s\n", arg_f);
+void filter(char* arg_f, char* errbuf, char* inter){
+	printf("Filtre: %s\n", arg_f);
+	bpf_u_int32 netaddr;
+	bpf_u_int32 netmask;
+
+	struct in_addr addr;
+	addr.s_addr=netaddr;
+	struct in_addr mask;
+	mask.s_addr=netmask;
+	if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
+			perror("Impossible de récupérer l'adresse");
+	}
+
+	printf("Adresse IP: %s\n",inet_ntoa(addr));
+	printf("Masque %s\n",inet_ntoa(mask));
+
+	// pcap_t* p;
+	// struct bpf_program fp;
+
+	//char filter_exp[] = "port 23";
+/*
+	if (pcap_compile(p, &fp, arg_f, 0, net) == -1) {
+		fprintf(stderr, "Couldn't parse filter %s: %s\n", arg_f, pcap_geterr(p));
+		//return(2);
+	}
+	if (pcap_setfilter(p, &fp) == -1) {
+		fprintf(stderr, "Couldn't install filter %s: %s\n", arg_f, pcap_geterr(p));
+		//return(2);
+	}*/
 }
 
 // TO DO
@@ -111,17 +152,4 @@ char* set_udp_ports(int port){
 	port = ports[port];
 	return port;
 }
-Fonction donnant en retour le flag en fonction de l'identifiant
-char* set_tcp_flags(int port){
-	char* flags[10];
-	flags[0] = "Reservé";
-	flags[1] = "ECN";
-	flags[2] = "CWR";
-	flags[3] = "ECN-Echo";
-	flags[4] = "URG";
-	flags[5] = "ACK";
-	flags[6] = "PSH";
-	flags[7] = "RST";
-	flags[8] = "SYN";
-	flags[9] = "FIN";
-}*/
+*/
