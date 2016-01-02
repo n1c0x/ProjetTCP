@@ -84,8 +84,6 @@ int sniff_online(char* arg_i, char* errbuf, char* inter){
 		error("Chosen interface incorrect. Please chose another interface");
 		return 1;
 	}
-	
-	
 }
 
 void sniff_offline(char* arg_o, char* errbuf){
@@ -108,6 +106,7 @@ void filter(char* arg_f, char* errbuf, char* inter){
 	addr.s_addr=netaddr;
 	struct in_addr mask;
 	mask.s_addr=netmask;
+
 	if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
 			perror("Impossible de récupérer l'adresse");
 	}

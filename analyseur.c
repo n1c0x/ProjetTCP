@@ -58,9 +58,9 @@ int main(int argc, char *argv[])
 		if (flag_o && flag_i){
 			error("-i and -o options can't be used simultaneously");
 		} else if(flag_i && flag_f){
-			if (sniff_online(arg_i, errbuf, inter)){
+			/*if (sniff_online(arg_i, errbuf, inter)){
 				sudo();
-			}
+			}*/
 			filter(arg_f, errbuf, inter);
 		}else if (flag_i){
 			if (sniff_online(arg_i, errbuf, inter)){
