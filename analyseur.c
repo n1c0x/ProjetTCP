@@ -10,22 +10,20 @@
 #include "lib/var_global.h"
 
 
-//#define LOCAL "rpcap://"
-int arg_v;
+/* #define LOCAL "rpcap://" */
 
 int main(int argc, char *argv[])
 	{
 		char errbuf[PCAP_ERRBUF_SIZE];
 		int c;		// Arguments
 
-		// Interface par défaut
+		/* Interface par défaut */
 		char* inter = pcap_lookupdev(errbuf);
 
-		// Initialisation des flags permettant de controler l'utilisation des options
+		/* Initialisation des flags permettant de controler l'utilisation des options */
 		int flag_i = 0;
 		int flag_o = 0;
 		int flag_f = 0;
-		int flag_v = 0;
 		char* arg_i;
 		char* arg_o;
 		char* arg_f;
@@ -47,7 +45,6 @@ int main(int argc, char *argv[])
 		    		// filtre BPF, optionnel
 		        break;
 		    	case 'v':
-		    		flag_v = 1;
 					arg_v = atoi(strdup(optarg));
 				break;
 		        default:
@@ -57,13 +54,8 @@ int main(int argc, char *argv[])
 
 		if (flag_o && flag_i){
 			error("-i and -o options can't be used simultaneously");
-		} else if(flag_i && flag_f){
-			/*if (sniff_online(arg_i, errbuf, inter)){
-				sudo();
-			}*/
-			filter(arg_f, errbuf, inter);
 		}else if (flag_i){
-			if (sniff_online(arg_i, errbuf, inter)){
+			if (sniff_online(arg_i, arg_f, errbuf, inter)){
 				sudo();
 			}
 		} else if (flag_o && flag_f){

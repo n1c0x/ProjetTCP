@@ -1,3 +1,5 @@
-void ip6(const u_char* packet){
+void ip6(void);
+
+void ip6(){
 	printf("IPv6\n");
 }

@@ -1,7 +1,6 @@
 #include <netinet/tcp.h>
-//#include "functions.h"
 
-void unknown_protocol();
+void tcp(const u_char* packet);
 void show_tcp_ports(const struct tcphdr *tcp);
 void show_tcp_else(const struct tcphdr *tcp);
 void show_tcp_protocol(const struct tcphdr *tcp);
@@ -12,7 +11,7 @@ void show_tcp_options(const struct tcphdr *tcp);
 void tcp(const u_char* packet){
 	printf("TCP");
 	const struct tcphdr *tcp;
-	tcp = (struct tcphdr*)(packet);
+	tcp = (const struct tcphdr*)(packet);
 
 	if (arg_v == 1){
 		show_tcp_protocol(tcp);

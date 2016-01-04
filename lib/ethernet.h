@@ -2,24 +2,16 @@
 #include <time.h>
 #include "ip4.h"
 #include "ip6.h"
-//#include "functions.h"
 
-
-void unknown_protocol();
-void line(char* separator, int length);
+void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet);
 void show_eth_protocol(const struct ether_header *eth, const u_char* packet);
 void show_eth_mac(const struct ether_header *eth);
 
-int arg_v;
-
 void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
-	/* Déclarations des fonctions utilisées */
-	void ip4(const u_char* packet);
-	void ip6(const u_char* packet);
 
 	const struct ether_header *eth;
 	int size_ethernet;
-	eth = (struct ether_header*)(packet);
+	eth = (const struct ether_header*)(packet);
 	size_ethernet = sizeof(eth->ether_dhost) + sizeof(eth->ether_shost) + sizeof(eth->ether_type);
 	packet = packet + size_ethernet;
 
@@ -70,7 +62,7 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
 			printf("IPX\n");
 		break;
 		case 0x86DD:
-			ip6(packet);
+			ip6();
 		break;
 		case 0x9000:
 			printf("Tests\n");

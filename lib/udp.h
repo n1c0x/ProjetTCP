@@ -1,7 +1,7 @@
 #include <netinet/udp.h>
-//#include "functions.h"
 
-void unknown_protocol();
+void udp(const u_char* packet);
+void unknown_protocol(void);
 void line(char* separator, int length);
 void show_udp_ports(const struct udphdr *udp);
 void show_udp_protocol(const struct udphdr *udp);
@@ -12,7 +12,7 @@ int arg_v;
 void udp(const u_char* packet){
 	printf("UDP");
 	const struct udphdr *udp;
-	udp = (struct udphdr*)(packet);
+	udp = (const struct udphdr*)(packet);
 
 	if (arg_v == 1){
 		show_udp_protocol(udp);
