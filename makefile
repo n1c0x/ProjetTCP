@@ -1,7 +1,8 @@
 prefix = analyseur
 
 all: 
-	gcc $(prefix).c -lpcap -o $(prefix) #-g -std=gnu99 -W -Wall -Wextra -Wmissing-declarations \
+	gcc $(prefix).c -lpcap -o $(prefix) 
+	#-g -std=gnu99 -W -Wall -Wextra -Wmissing-declarations \
         #-Wmissing-prototypes -Wredundant-decls -Wshadow -Wbad-function-cast \
         #-Wcast-qual -Wno-discarded-qualifiers
         #-ansi -O2 -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int
