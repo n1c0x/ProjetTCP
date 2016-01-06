@@ -17,26 +17,43 @@ char* set_tcp_options(int option);
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	ethernet(pkthdr, packet);
 }
-
+/* Fonction de décallage */
+void shift(int shift){
+	for (int i = 1; i <= shift; ++i){
+		printf("\t");
+	}
+}
+/* Fonction d'affichage du message de protocole inconnu */
 void unknown_protocol(){
 	printf("Unknown");
 }
+
+/* Fonction d'affichage d'un message d'erreur */
 void error(char* reason){
 	printf("Error: %s\n", reason);
 }
+
+/* Fonction d'affichage de l'utilisation du programme */
 void usage(){
 	printf("Usage: ./analyseur {-i <interface> -f <filter>,-o <capture file>}, -v <verbose level>\n");
 }
-void line(char* separator, int length){
+
+/* Fonction d'affichage d'une ligne de symboles, de longueur donnée, avec ou sans retour à la ligne */
+void line(char* separator, int length, int cr){
 	for (int i = 0; i < length; ++i){
 		printf("%s", separator);
 	}
-	printf("\n");
+	if (cr){
+		printf("\n");
+	}
 }
+
+/* Fonction d'affichage de demande de droits sudo */
 void sudo(){
 	printf("Use sudo to launch the program\n");
 }
 
+/* Fonction de vérification si l'interface donnée en entrée existe */
 int iface_exists(char* interface_input, char* errbuf){
 	pcap_if_t *alldevs;
 	pcap_if_t *d;
@@ -59,6 +76,7 @@ int iface_exists(char* interface_input, char* errbuf){
 	return 0;
 }
 
+/* Fonction qui réalise la capture de paquets à partir de l'interface et du filtre donnés */
 int sniff_online(char* arg_i, char* arg_f, char* errbuf, char* inter){
 	pcap_t* p;	// capture
 
@@ -84,6 +102,7 @@ int sniff_online(char* arg_i, char* arg_f, char* errbuf, char* inter){
 	}
 }
 
+/* Fonction qui réalise la capture de paquets avec un fichier pcap donné en entrée */
 void sniff_offline(char* arg_o, char* errbuf){
 	pcap_t* p;	// capture
 	p = pcap_open_offline(arg_o, errbuf);
@@ -95,6 +114,7 @@ void sniff_offline(char* arg_o, char* errbuf){
 	pcap_close(p);
 }
 
+/* Fonction de création et d'utilisation d'un filtre BPF */
 void filter(char* arg_f, pcap_t* p, char* errbuf, char* inter){
 	printf("Filter: %s\n", arg_f);
 	bpf_u_int32 netaddr;
@@ -119,6 +139,7 @@ void filter(char* arg_f, pcap_t* p, char* errbuf, char* inter){
 	}
 }
 
+/* Fonction qui renvoie l'option TCP en fonction du flag */
 char* set_tcp_options(int option){
 	char* tbl_option[255];
 	tbl_option[0] = "End of Option List";
@@ -164,6 +185,8 @@ char* set_tcp_options(int option){
 
 	return tbl_option[option];
 }
+
+/* Fonction qui affiche le texte donné en argument avec différents styles (gras, souligné, en couleur, etc) */
 void styled_print(char* style, char* text){
 	if (style == "bold"){
 		printf("\033[1m");

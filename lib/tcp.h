@@ -31,7 +31,7 @@ void tcp(const u_char* packet){
 		packet = packet + SIZE_TCP_HEADER;
 		int size_options = (tcp->doff*32)/8 - SIZE_TCP_HEADER;
 		show_tcp_options(packet, size_options);
-		line("-",70);
+		line("-",70,1);
 		show_tcp_protocol(tcp, packet);
 	}
 }

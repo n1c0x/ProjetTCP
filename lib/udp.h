@@ -4,7 +4,7 @@
 
 void udp(const u_char* packet);
 void unknown_protocol(void);
-void line(char* separator, int length);
+void line(char* separator, int length, int cr);
 void show_udp_ports(const struct udphdr *udp);
 void show_udp_protocol(const struct udphdr *udp, const u_char* packet);
 void show_udp_length(const struct udphdr *udp);
@@ -28,7 +28,7 @@ void udp(const u_char* packet){
 	}else{
 		show_udp_ports(udp);
 		show_udp_length(udp);
-		line("-",70);
+		line("-",70, 1);
 		show_udp_protocol(udp, packet);
 	}
 }
@@ -69,7 +69,6 @@ void show_udp_protocol(const struct udphdr *udp, const u_char* packet){
 			printf("SMTP");
 		break;
 		case 53:
-			//printf("DNS\n");
 			dns(packet);
 		break;
 		case 67:

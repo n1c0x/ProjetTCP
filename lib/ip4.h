@@ -26,12 +26,12 @@ void ip4(const u_char* packet){
 		show_ip_protocol(packet, ip);
 	}else if (arg_v == 2){
 		show_ip(ip, addr);
-		line("-",70);
+		line("-",70,1);
 		show_ip_protocol(packet, ip);
 	}else{
 		show_ip(ip, addr);
 		show_ip_else(ip);
-		line("-",70);
+		line("-",70,1);
 		show_ip_protocol(packet, ip);
 	}
 	printf("\n");

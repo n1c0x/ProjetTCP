@@ -27,7 +27,7 @@ void arp(const u_char* packet){
 }
 
 void show_arp(const struct arphdr* arp){
-	printf("\t\tHardware type: %x ",ntohs(arp->ar_hrd));
+	printf("\t\tHardware type: 0x%x ",ntohs(arp->ar_hrd));
 	if (ntohs(arp->ar_hrd) == 1)
 	{
 		printf("(Ethernet)\n");
@@ -35,7 +35,7 @@ void show_arp(const struct arphdr* arp){
 		printf("(Experimental Ethernet)\n");
 	}
 
-	printf("\t\tProtocol address: %x ", ntohs(arp->ar_pro));
+	printf("\t\tProtocol address: 0x%x ", ntohs(arp->ar_pro));
 	if (ntohs(arp->ar_pro) == 0x0800)
 	{
 		printf("(IPv4)\n");
@@ -43,9 +43,9 @@ void show_arp(const struct arphdr* arp){
 		printf("Unknown\n");
 	}
 
-	printf("\t\tLength of hardware address: %x\n", arp->ar_hln);
-	printf("\t\tLength of protocol address: %x\n", arp->ar_pln);
-	printf("\t\tOperation code: %x ", ntohs(arp->ar_op));
+	printf("\t\tLength of hardware address: 0x%x\n", arp->ar_hln);
+	printf("\t\tLength of protocol address: 0x%x\n", arp->ar_pln);
+	printf("\t\tOperation code: 0x%x ", ntohs(arp->ar_op));
 	if (ntohs(arp->ar_op) == 1)
 	{
 		printf("(Request)\n");

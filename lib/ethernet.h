@@ -28,10 +28,10 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	}else{
 		printf("%s\n", s);
 		show_eth_mac(eth);
-		line("-",70);
+		line("-",70,1);
 		show_eth_protocol(eth, packet);
 	}
-	line("=",70);
+	line("=",70,1);
 }
 
 void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
