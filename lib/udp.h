@@ -51,68 +51,67 @@ void show_udp_protocol(const struct udphdr *udp, const u_char* packet){
 	}
 	switch(ntohs(udp->dest)) {
 		case 07:
-			printf("Echo\n");
+			printf("Echo");
 		break;
 		case 20:
-			printf("FTP-data\n");
+			printf("FTP-data");
 		break;
 		case 21:
-			printf("FTP\n");
+			printf("FTP");
 		break;
 		case 22:
-			printf("SSH\n");
+			printf("SSH");
 		break;
 		case 23:
-			printf("Telnet\n");
+			printf("Telnet");
 		break;
 		case 25:
-			printf("SMTP\n");
+			printf("SMTP");
 		break;
 		case 53:
 			//printf("DNS\n");
 			dns(packet);
 		break;
 		case 67:
-			printf("BOOTPS\n");
+			printf("BOOTPS");
 		break;
 		case 68:
-			printf("BOOTPC\n");
+			printf("BOOTPC");
 		break;
 		case 69:
-			printf("TFTP\n");
+			printf("TFTP");
 		break;
 		default :
 			switch(ntohs(udp->source)) {
 				case 07:
-					printf("Echo\n");
+					printf("Echo");
 				break;
 				case 20:
-					printf("FTP-data\n");
+					printf("FTP-data");
 				break;
 				case 21:
-					printf("FTP\n");
+					printf("FTP");
 				break;
 				case 22:
-					printf("SSH\n");
+					printf("SSH");
 				break;
 				case 23:
-					printf("Telnet\n");
+					printf("Telnet");
 				break;
 				case 25:
-					printf("SMTP\n");
+					printf("SMTP");
 				break;
 				case 53:
-					//printf("DNS\n");
 					dns(packet);
 				break;
 				case 67:
-					printf("BOOTPS\n");
+					printf("BOOTPS");
 				break;
 				case 68:
-					printf("BOOTPC\n");
+					printf("BOOTPC");
 				break;
 				case 69:
-					printf("TFTP\n");
+					printf("TFTP");
 				break;
 				default :
 					unknown_protocol();

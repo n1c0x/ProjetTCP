@@ -1,4 +1,5 @@
 #include <netinet/tcp.h>
+#include "ports_tcp.h"
 
 void tcp(const u_char* packet);
 void show_tcp_ports(const struct tcphdr *tcp);
@@ -7,6 +8,9 @@ void show_tcp_protocol(const struct tcphdr *tcp, const u_char* packet);
 void show_tcp_flags(const struct tcphdr *tcp);
 void show_tcp_options(const u_char* packet, int size_options);
 void styled_print(char* style, char* text);
+char* set_tcp_ports(int port);
+
+int arg_v;
 
 void tcp(const u_char* packet){
 	printf("\033[1m");
@@ -98,103 +102,55 @@ void show_tcp_options(const u_char* packet, int size_options){
 	printf("\n");
 }
 
-
-
 void show_tcp_protocol(const struct tcphdr *tcp, const u_char* packet){
 	if (arg_v != 1){
 		printf("\t\t\tApplication protocol: ");
 	}else{
 		printf(": ");
 	}
-	switch(ntohs(tcp->dest)) {
-		case 07:
-			printf("Echo\n");
-		break;
-		case 20:
-			printf("FTP-data\n");
-		break;
-		case 21:
-			printf("FTP\n");
-		break;
-		case 22:
-			printf("SSH\n");
-		break;
-		case 23:
-			printf("Telnet\n");
-		break;
-		case 25:
-			printf("SMTP\n");
-		break;
-		case 53:
-			printf("DNS\n");
-		break;
-		case 67:
-			printf("BOOTPS\n");
-		break;
-		case 68:
-			printf("BOOTPC\n");
-		break;
-		case 69:
-			printf("TFTP\n");
-		break;
-		case 80:
-			printf("HTTP\n");
-		break;
-		case 110:
-			printf("POP3\n");
-		break;
-		case 143:
-			printf("IMAP\n");
-		break;
-		case 443:
-			printf("HTTPS\n");
-		break;
-		default :
-			switch(ntohs(tcp->source)) {
-				case 07:
-					printf("Echo\n");
-				break;
-				case 20:
-					printf("FTP-data\n");
-				break;
-				case 21:
-					printf("FTP\n");
-				break;
-				case 22:
-					printf("SSH\n");
-				break;
-				case 23:
-					printf("Telnet\n");
-				break;
-				case 25:
-					printf("SMTP\n");
-				break;
-				case 53:
-					printf("DNS\n");
-				break;
-				case 67:
-					printf("BOOTPS\n");
-				break;
-				case 68:
-					printf("BOOTPC\n");
-				break;
-				case 69:
-					printf("TFTP\n");
-				break;
-				case 80:
-					printf("HTTP\n");
-				break;
-				case 110:
-					printf("POP3\n");
-				break;
-				case 143:
-					printf("IMAP\n");
-				break;
-				case 443:
-					printf("HTTPS\n");
-				break;
-				default :
-					unknown_protocol();
-			}
+	if (ntohs(tcp->dest) == 7 || ntohs(tcp->source) == 7){
+		printf("Echo");
+	}
+	if (ntohs(tcp->dest) == 20 || ntohs(tcp->source) == 20){
+		printf("FTP-Data");
+	}
+	if (ntohs(tcp->dest) == 21 || ntohs(tcp->source) == 21){
+		printf("FTP");
+	}
+	if (ntohs(tcp->dest) == 22 || ntohs(tcp->source) == 22){
+		printf("SSH");
+	}
+	if (ntohs(tcp->dest) == 23 || ntohs(tcp->source) == 23){
+		printf("Telnet");
+	}
+	if (ntohs(tcp->dest) == 25 || ntohs(tcp->source) == 25){
+		printf("SMTP");
+	}
+	if (ntohs(tcp->dest) == 53 || ntohs(tcp->source) == 53){
+		dns(packet);
+	}
+	if (ntohs(tcp->dest) == 67 || ntohs(tcp->source) == 67){
+		printf("BOOTPS");
+	}
+	if (ntohs(tcp->dest) == 68 || ntohs(tcp->source) == 68){
+		printf("BOOTPC");
+	}
+	if (ntohs(tcp->dest) == 69 || ntohs(tcp->source) == 69){
+		printf("TFTP");
+	}
+	if (ntohs(tcp->dest) == 80 || ntohs(tcp->source) == 80){
+		printf("HTTP");
+	}
+	if (ntohs(tcp->dest) == 7 || ntohs(tcp->source) == 7){
+		printf("POP3");
+	}
+	if (ntohs(tcp->dest) == 110 || ntohs(tcp->source) == 110){
+		printf("IMAP");
+	}
+	if (ntohs(tcp->dest) == 143 || ntohs(tcp->source) == 143){
+		printf("HTTPS");
+	}
+	if (ntohs(tcp->dest) == 443 || ntohs(tcp->source) == 443){
+		printf("Echo");
 	}
 }

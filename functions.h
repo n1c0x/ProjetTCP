@@ -19,7 +19,7 @@ void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* pack
 }
 
 void unknown_protocol(){
-	printf("Unknown\n");
+	printf("Unknown");
 }
 void error(char* reason){
 	printf("Error: %s\n", reason);
@@ -179,29 +179,10 @@ void styled_print(char* style, char* text){
 		printf("\033[7m");
 		printf("%s\n",text);
 		printf("\033[27m");
+	}else if (style == "red")
+	{
+		printf("\033[31m");
+		printf("%s\n",text);
+		printf("\033[0m");
 	}
 }
-
-// TO DO
-/* Fonction donnant en retour l'application en fonction du port 
-char* set_tcp_ports(int port){
-	char* ports[65536];
-	Remplir le tableau
-	
-	ports[1] = "tcpmux";
-	ports[2] = "compressnet";
-	
-	port = ports[port];
-	return port;
-}
-char* set_udp_ports(int port){
-	char* ports[65536];
-	Remplir le tableau
-	
-	ports[1] = "tcpmux";
-	ports[2] = "compressnet";
-	
-	port = ports[port];
-	return port;
-}
-*/

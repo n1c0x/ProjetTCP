@@ -10,8 +10,6 @@
 #include "lib/var_global.h"
 
 
-/* #define LOCAL "rpcap://" */
-
 int main(int argc, char *argv[])
 	{
 		char errbuf[PCAP_ERRBUF_SIZE];

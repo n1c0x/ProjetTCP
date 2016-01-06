@@ -2,6 +2,7 @@
 #include <time.h>
 #include "ip4.h"
 #include "ip6.h"
+#include "arp.h"
 
 void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet);
 void show_eth_protocol(const struct ether_header *eth, const u_char* packet);
@@ -14,12 +15,18 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	size_ethernet = sizeof(eth->ether_dhost) + sizeof(eth->ether_shost) + sizeof(eth->ether_type);
 	packet = packet + size_ethernet;
 
-	printf("%d bytes (%d bits) recieved on %s",pkthdr->caplen, pkthdr->caplen * 8, ctime((const time_t*)&pkthdr->ts));
+	printf("%d bytes (%d bits) recieved on ",pkthdr->caplen, pkthdr->caplen * 8);
+	
+	char s[100];
+	struct tm * p = localtime((const time_t*)&pkthdr->ts);
+	strftime(s, 1000, "%a, %b %d %Y at %X", p);
+	
 	
 	if (arg_v == 1){
+		printf("%s ", s);
 		show_eth_protocol(eth, packet);
 	}else{
-		printf("\n");
+		printf("%s\n", s);
 		show_eth_mac(eth);
 		line("-",70);
 		show_eth_protocol(eth, packet);
@@ -43,7 +50,7 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
 			ip4(packet);
 		break;
 		case 0x0806:
-			printf("ARP\n");
+			arp(packet);
 		break;
 		case 0x8035:
 			printf("Reverse ARP\n");
@@ -68,6 +75,7 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
 		break;		
 		default :
 			unknown_protocol();
+			printf("\n");
 	}
 }
 
