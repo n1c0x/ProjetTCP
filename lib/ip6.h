@@ -1,5 +1,5 @@
 void ip6(void);
 
 void ip6(){
-	printf("IPv6\n");
+	styled_print("bold","IPv6");
 }

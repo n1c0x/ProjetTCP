@@ -6,11 +6,15 @@ void line(char* separator, int length);
 void show_udp_ports(const struct udphdr *udp);
 void show_udp_protocol(const struct udphdr *udp);
 void show_udp_length(const struct udphdr *udp);
+void styled_print(char* style, char* text);
 
 int arg_v;
 
 void udp(const u_char* packet){
+	printf("\033[1m");
 	printf("UDP");
+	printf("\033[0m");
+
 	const struct udphdr *udp;
 	udp = (const struct udphdr*)(packet);
 

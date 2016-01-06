@@ -5,11 +5,14 @@ void show_tcp_ports(const struct tcphdr *tcp);
 void show_tcp_else(const struct tcphdr *tcp);
 void show_tcp_protocol(const struct tcphdr *tcp);
 void show_tcp_flags(const struct tcphdr *tcp);
-void show_tcp_options(const struct tcphdr *tcp);
-
+void show_tcp_options(const u_char* packet, int size_options);
+void styled_print(char* style, char* text);
 
 void tcp(const u_char* packet){
+	printf("\033[1m");
 	printf("TCP");
+	printf("\033[0m");
+
 	const struct tcphdr *tcp;
 	tcp = (const struct tcphdr*)(packet);
 
@@ -21,11 +24,12 @@ void tcp(const u_char* packet){
 		show_tcp_ports(tcp);
 		show_tcp_else(tcp);
 		show_tcp_flags(tcp);
+		packet = packet + SIZE_TCP_HEADER;
+		int size_options = (tcp->doff*32)/8 - SIZE_TCP_HEADER;
+		show_tcp_options(packet, size_options);
 		line("-",70);
 		show_tcp_protocol(tcp);
-		show_tcp_options(tcp);
 	}
-
 }
 
 void show_tcp_ports(const struct tcphdr *tcp){
@@ -54,9 +58,47 @@ void show_tcp_else(const struct tcphdr *tcp){
 	printf("\t\t\tUrgent Pointer: %d\n", ntohs(tcp->urg_ptr));
 }
 
-void show_tcp_options(const struct tcphdr *tcp){
+void show_tcp_options(const u_char* packet, int size_options){
+	/* type, longueur et valeur des options */
+	int type;
+	int length;
+	int value;
+	int count = 0;
+	char* set_tcp_options(int option);
 
+	styled_print("underline", "\t\t\tOptions TCP:");
+	
+	while(count <= size_options){
+		type = *packet;
+		printf("\t\t\tType: %x ", type);
+		packet++;
+		count++;
+		switch(type){
+			case 0:
+				printf("(%s)\n", set_tcp_options(type));
+				break;
+			case 1:
+				printf("(%s)\n", set_tcp_options(type));
+				break;
+			default:
+				printf("(%s)\n", set_tcp_options(type));
+				length = *packet;
+				printf("\t\t\t\tLongueur: %d\n", length);
+				printf("\t\t\t\tValeur: ");
+				/* On boucle sur le champ de valeur pour tous les afficher. -2 parce que le champ length compte aussi pour le type et la longueur */
+				for (int i = 0; i < length-2; ++i){
+					packet++;
+					count++;
+					value = *packet;
+					printf("%x", value);
+				}
+				count = count + length;
+		}
+	}
+	printf("\n");
 }
+
+
 
 void show_tcp_protocol(const struct tcphdr *tcp){
 	if (arg_v != 1){

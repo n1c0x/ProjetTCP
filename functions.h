@@ -11,6 +11,8 @@ int sniff_online(char* arg_i, char* arg_f, char* errbuf, char* inter);
 void sniff_offline(char* arg_o, char* errbuf);
 void filter(char* arg_f, pcap_t* p, char* errbuf, char* inter);
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet);
+char* set_tcp_options(int option);
+
 
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	ethernet(pkthdr, packet);
@@ -114,6 +116,69 @@ void filter(char* arg_f, pcap_t* p, char* errbuf, char* inter){
 	}
 	if (pcap_setfilter(p, &fp) == -1) {
 		printf("Couldn't install filter \"%s\"\n", arg_f);
+	}
+}
+
+char* set_tcp_options(int option){
+	char* tbl_option[255];
+	tbl_option[0] = "End of Option List";
+	tbl_option[1] = "No-Operation";
+	tbl_option[2] = "Maximum Segment Size";
+	tbl_option[3] = "Window Scale";
+	tbl_option[4] = "SACK Permitted";
+	tbl_option[5] = "SACK";
+	tbl_option[6] = "Echo";
+	tbl_option[7] = "Echo Reply";
+	tbl_option[8] = "Timestamps";
+	tbl_option[9] = "Partial Order Connection Permitted";
+	tbl_option[10] = "Partial Order Service Profile";
+	tbl_option[11] = "CC";
+	tbl_option[12] = "CC.NEW";
+	tbl_option[13] = "CC.ECHO";
+	tbl_option[14] = "TCP Alternate Checksum Request";
+	tbl_option[15] = "TCP Alternate Checksum Data";
+	tbl_option[16] = "Skeeter";
+	tbl_option[17] = "Bubba";
+	tbl_option[18] = "Trailer Checksum Option";
+	tbl_option[19] = "MD5 Signature Option";
+	tbl_option[20] = "SCPS Capabilities";
+	tbl_option[21] = "Selective Negative Acknowledgements";
+	tbl_option[22] = "Record Boundaries";
+	tbl_option[23] = "Corruption experienced";
+	tbl_option[24] = "SNAP";
+	tbl_option[25] = "Unassigned";
+	tbl_option[26] = "TCP Compression Filter";
+	tbl_option[27] = "Quick-Start Response";
+	tbl_option[28] = "User Timeout Option";
+	tbl_option[29] = "TCP Authentication Option";
+	tbl_option[30] = "Multipath TCP";
+	for (int i = 31; i <= 33; ++i){
+		tbl_option[i] = "Reserved";
+	}
+	tbl_option[34] = "TCP Fast Open Cookie";
+	for (int i = 35; i <= 252; ++i){
+		tbl_option[i] = "Reserved";
+	}
+	tbl_option[253] = "RFC3692-style Experiment 1";
+	tbl_option[254] = "RFC3692-style Experiment 2";
+
+	return tbl_option[option];
+}
+void styled_print(char* style, char* text){
+	if (style == "bold"){
+		printf("\033[1m");
+		printf("%s\n",text);
+		printf("\033[0m");
+	}else if (style == "underline")
+	{
+		printf("\033[4m");
+		printf("%s\n",text);
+		printf("\033[24m");
+	}else if (style == "inverse")
+	{
+		printf("\033[7m");
+		printf("%s\n",text);
+		printf("\033[27m");
 	}
 }
 
