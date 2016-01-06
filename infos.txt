@@ -88,3 +88,5 @@ u_char: tableau d'octets
 Pour ethernet: les octets de poids fort sont à droite
 	ntohl()
 	ntohs()
+
+https://www.npmjs.com/package/ansi-codes
