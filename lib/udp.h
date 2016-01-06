@@ -1,10 +1,12 @@
 #include <netinet/udp.h>
+#include "dns.h"
+
 
 void udp(const u_char* packet);
 void unknown_protocol(void);
 void line(char* separator, int length);
 void show_udp_ports(const struct udphdr *udp);
-void show_udp_protocol(const struct udphdr *udp);
+void show_udp_protocol(const struct udphdr *udp, const u_char* packet);
 void show_udp_length(const struct udphdr *udp);
 void styled_print(char* style, char* text);
 
@@ -19,7 +21,7 @@ void udp(const u_char* packet){
 	udp = (const struct udphdr*)(packet);
 
 	if (arg_v == 1){
-		show_udp_protocol(udp);
+		show_udp_protocol(udp, packet);
 	}else if (arg_v == 2){
 		show_udp_ports(udp);
 		show_udp_length(udp);
@@ -27,7 +29,7 @@ void udp(const u_char* packet){
 		show_udp_ports(udp);
 		show_udp_length(udp);
 		line("-",70);
-		show_udp_protocol(udp);
+		show_udp_protocol(udp, packet);
 	}
 }
 
@@ -41,7 +43,7 @@ void show_udp_length(const struct udphdr *udp){
 	printf("\t\t\tLength: %d Bytes \n", ntohs(udp->len));
 }
 
-void show_udp_protocol(const struct udphdr *udp){
+void show_udp_protocol(const struct udphdr *udp, const u_char* packet){
 	if (arg_v != 1){
 		printf("\t\t\tApplication protocol: ");
 	}else{
@@ -67,7 +69,8 @@ void show_udp_protocol(const struct udphdr *udp){
 			printf("SMTP\n");
 		break;
 		case 53:
-			printf("DNS\n");
+			//printf("DNS\n");
+			dns(packet);
 		break;
 		case 67:
 			printf("BOOTPS\n");
@@ -99,7 +102,8 @@ void show_udp_protocol(const struct udphdr *udp){
 					printf("SMTP\n");
 				break;
 				case 53:
-					printf("DNS\n");
+					//printf("DNS\n");
+					dns(packet);
 				break;
 				case 67:
 					printf("BOOTPS\n");

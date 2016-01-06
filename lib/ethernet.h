@@ -8,7 +8,6 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet);
 void show_eth_mac(const struct ether_header *eth);
 
 void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
-
 	const struct ether_header *eth;
 	int size_ethernet;
 	eth = (const struct ether_header*)(packet);

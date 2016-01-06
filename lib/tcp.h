@@ -3,7 +3,7 @@
 void tcp(const u_char* packet);
 void show_tcp_ports(const struct tcphdr *tcp);
 void show_tcp_else(const struct tcphdr *tcp);
-void show_tcp_protocol(const struct tcphdr *tcp);
+void show_tcp_protocol(const struct tcphdr *tcp, const u_char* packet);
 void show_tcp_flags(const struct tcphdr *tcp);
 void show_tcp_options(const u_char* packet, int size_options);
 void styled_print(char* style, char* text);
@@ -17,7 +17,7 @@ void tcp(const u_char* packet){
 	tcp = (const struct tcphdr*)(packet);
 
 	if (arg_v == 1){
-		show_tcp_protocol(tcp);
+		show_tcp_protocol(tcp,packet);
 	}else if (arg_v == 2){
 		show_tcp_ports(tcp);
 	}else{
@@ -28,7 +28,7 @@ void tcp(const u_char* packet){
 		int size_options = (tcp->doff*32)/8 - SIZE_TCP_HEADER;
 		show_tcp_options(packet, size_options);
 		line("-",70);
-		show_tcp_protocol(tcp);
+		show_tcp_protocol(tcp, packet);
 	}
 }
 
@@ -100,7 +100,7 @@ void show_tcp_options(const u_char* packet, int size_options){
 
 
 
-void show_tcp_protocol(const struct tcphdr *tcp){
+void show_tcp_protocol(const struct tcphdr *tcp, const u_char* packet){
 	if (arg_v != 1){
 		printf("\t\t\tApplication protocol: ");
 	}else{
