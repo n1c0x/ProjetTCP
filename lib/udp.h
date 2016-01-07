@@ -1,6 +1,6 @@
 #include <netinet/udp.h>
 #include "dns.h"
-
+#include "bootp.h"
 
 void udp(const u_char* packet);
 void unknown_protocol(void);
@@ -8,7 +8,9 @@ void line(char* separator, int length, int cr);
 void show_udp_ports(const struct udphdr *udp);
 void show_udp_protocol(const struct udphdr *udp, const u_char* packet);
 void show_udp_length(const struct udphdr *udp);
-void styled_print(char* style, char* text);
+void styled_print(char* style, char* text, int cr);
+void bootp(const u_char* packet);
+
 
 int arg_v;
 
@@ -29,6 +31,7 @@ void udp(const u_char* packet){
 		show_udp_ports(udp);
 		show_udp_length(udp);
 		line("-",70, 1);
+		packet = packet + SIZE_UDP_HEADER;
 		show_udp_protocol(udp, packet);
 	}
 }
@@ -72,10 +75,10 @@ void show_udp_protocol(const struct udphdr *udp, const u_char* packet){
 			dns(packet);
 		break;
 		case 67:
-			printf("BOOTPS");
+			bootp(packet);
 		break;
 		case 68:
-			printf("BOOTPC");
+			bootp(packet);
 		break;
 		case 69:
 			printf("TFTP");
@@ -104,10 +107,10 @@ void show_udp_protocol(const struct udphdr *udp, const u_char* packet){
 					dns(packet);
 				break;
 				case 67:
-					printf("BOOTPS");
+					bootp(packet);
 				break;
 				case 68:
-					printf("BOOTPC");
+					bootp(packet);
 				break;
 				case 69:
 					printf("TFTP");

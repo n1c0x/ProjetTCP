@@ -11,13 +11,13 @@ void arp(const u_char* packet){
 	const struct arphdr *arp;
 	arp = (const struct arphdr*)(packet);
 
-	styled_print("bold","ARP");
-
 	if (arg_v == 1){
-		
+		styled_print("bold","ARP",0);
 	}else if (arg_v == 2){
+		styled_print("bold","ARP",1);
 		show_arp(arp);
 	}else{
+		styled_print("bold","ARP",1);
 		show_arp(arp);
 		show_arp_mac(packet, "Sender");
 		show_arp_ip(packet, "Sender");

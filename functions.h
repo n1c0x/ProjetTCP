@@ -17,12 +17,14 @@ char* set_tcp_options(int option);
 void got_packet(u_char *verb,const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	ethernet(pkthdr, packet);
 }
+
 /* Fonction de décallage */
 void shift(int shift){
 	for (int i = 1; i <= shift; ++i){
 		printf("\t");
 	}
 }
+
 /* Fonction d'affichage du message de protocole inconnu */
 void unknown_protocol(){
 	printf("Unknown");
@@ -38,7 +40,7 @@ void usage(){
 	printf("Usage: ./analyseur {-i <interface> -f <filter>,-o <capture file>}, -v <verbose level>\n");
 }
 
-/* Fonction d'affichage d'une ligne de symboles, de longueur donnée, avec ou sans retour à la ligne */
+/* Fonction d'affichage d'une ligne de symboles, de longueur donnée, avec ou sans retour à la ligne. L'argument cr permet de spécifier si un retour à la ligne est inséré à la fin*/
 void line(char* separator, int length, int cr){
 	for (int i = 0; i < length; ++i){
 		printf("%s", separator);
@@ -116,27 +118,33 @@ void sniff_offline(char* arg_o, char* errbuf){
 
 /* Fonction de création et d'utilisation d'un filtre BPF */
 void filter(char* arg_f, pcap_t* p, char* errbuf, char* inter){
-	printf("Filter: %s\n", arg_f);
-	bpf_u_int32 netaddr;
-	bpf_u_int32 netmask;
+	if (arg_f)
+	{
+		printf("Filter: %s\n", arg_f);
+		bpf_u_int32 netaddr;
+		bpf_u_int32 netmask;
 
-	if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
-			perror("Unable to get the address and netmask");
+		if(pcap_lookupnet(inter, &netaddr, &netmask, errbuf) != 0){
+				perror("Unable to get the address and netmask");
+		}
+
+		struct in_addr addr;
+		addr.s_addr=netaddr;
+		struct in_addr mask;
+		mask.s_addr=netmask;
+
+		struct bpf_program fp;
+
+		if (pcap_compile(p, &fp, arg_f, 0, netmask) == -1) {
+			printf("Couldn't parse filter \"%s\"\n", arg_f);
+		}
+		if (pcap_setfilter(p, &fp) == -1) {
+			printf("Couldn't install filter \"%s\"\n", arg_f);
+		}
+	}else{
+		printf("No filter specified\n");
 	}
-
-	struct in_addr addr;
-	addr.s_addr=netaddr;
-	struct in_addr mask;
-	mask.s_addr=netmask;
-
-	struct bpf_program fp;
-
-	if (pcap_compile(p, &fp, arg_f, 0, netmask) == -1) {
-		printf("Couldn't parse filter \"%s\"\n", arg_f);
-	}
-	if (pcap_setfilter(p, &fp) == -1) {
-		printf("Couldn't install filter \"%s\"\n", arg_f);
-	}
+		
 }
 
 /* Fonction qui renvoie l'option TCP en fonction du flag */
@@ -186,26 +194,57 @@ char* set_tcp_options(int option){
 	return tbl_option[option];
 }
 
-/* Fonction qui affiche le texte donné en argument avec différents styles (gras, souligné, en couleur, etc) */
-void styled_print(char* style, char* text){
+/* Fonction qui renvoie l'option Bootp en fonction de sa valeur */
+char* set_bootp_options(int option){
+	char* tbl_option[255];
+	tbl_option[0] = "Padding";
+	tbl_option[1] = "Subnet Mask";
+	tbl_option[3] = "Router";
+	tbl_option[6] = "Domain Name Server";
+	tbl_option[12] = "Host Name";
+	tbl_option[15] = "Domain Name";
+	tbl_option[50] = "Requested IP address";
+	tbl_option[51] = "IP address lease time";
+	tbl_option[53] = "DHCP message type";
+	tbl_option[54] = "Server identifier";
+	tbl_option[55] = "Parameter request list";
+	tbl_option[255] = "End";
+
+	return tbl_option[option];
+} 
+
+/* Fonction qui affiche le texte donné en argument avec différents styles (gras, souligné, en couleur, etc). L'argument cr permet de spécifier si un retour à la ligne est inséré à la fin */
+void styled_print(char* style, char* text, int cr){
 	if (style == "bold"){
 		printf("\033[1m");
-		printf("%s\n",text);
+		printf("%s",text);
+		if (cr){
+			printf("\n");
+		}
 		printf("\033[0m");
 	}else if (style == "underline")
 	{
 		printf("\033[4m");
-		printf("%s\n",text);
+		printf("%s",text);
+		if (cr){
+			printf("\n");
+		}
 		printf("\033[24m");
 	}else if (style == "inverse")
 	{
 		printf("\033[7m");
-		printf("%s\n",text);
+		printf("%s",text);
+		if (cr){
+			printf("\n");
+		}
 		printf("\033[27m");
 	}else if (style == "red")
 	{
 		printf("\033[31m");
-		printf("%s\n",text);
+		printf("%s",text);
+		if (cr){
+			printf("\n");
+		}
 		printf("\033[0m");
 	}
 }

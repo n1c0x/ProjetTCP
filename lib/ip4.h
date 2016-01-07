@@ -45,7 +45,7 @@ void show_ip(const struct iphdr *ip,struct in_addr addr){
 		addr.s_addr = ip->daddr;
 		printf("to %s",inet_ntoa(addr));
 	}else{
-		styled_print("bold","IPv4");
+		styled_print("bold","IPv4",1);
 		addr.s_addr = ip->saddr;
 		printf("\t\tSource IP address: %s\n",inet_ntoa(addr));
 		addr.s_addr = ip->daddr;

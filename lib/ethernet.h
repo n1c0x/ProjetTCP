@@ -1,7 +1,6 @@
 #include <net/ethernet.h>
 #include <time.h>
 #include "ip4.h"
-#include "ip6.h"
 #include "arp.h"
 
 void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet);
@@ -14,18 +13,16 @@ void ethernet(const struct pcap_pkthdr* pkthdr,const u_char* packet){
 	eth = (const struct ether_header*)(packet);
 	size_ethernet = sizeof(eth->ether_dhost) + sizeof(eth->ether_shost) + sizeof(eth->ether_type);
 	packet = packet + size_ethernet;
-
-	printf("%d bytes (%d bits) recieved on ",pkthdr->caplen, pkthdr->caplen * 8);
 	
 	char s[100];
 	struct tm * p = localtime((const time_t*)&pkthdr->ts);
 	strftime(s, 1000, "%a, %b %d %Y at %X", p);
 	
-	
 	if (arg_v == 1){
-		printf("%s ", s);
+		//printf("%s ", s);
 		show_eth_protocol(eth, packet);
 	}else{
+		printf("%d bytes (%d bits) recieved on ",pkthdr->caplen, pkthdr->caplen * 8);
 		printf("%s\n", s);
 		show_eth_mac(eth);
 		line("-",70,1);
@@ -53,7 +50,7 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
 			arp(packet);
 		break;
 		case 0x8035:
-			printf("Reverse ARP\n");
+			styled_print("bold","Reverse ARP",1);
 		break;
 		case 0x80B9:
 			printf("AppleTalk\n");
@@ -68,7 +65,7 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
 			printf("IPX\n");
 		break;
 		case 0x86DD:
-			ip6();
+			styled_print("bold","IPv6",1);
 		break;
 		case 0x9000:
 			printf("Tests\n");
@@ -80,13 +77,20 @@ void show_eth_protocol(const struct ether_header *eth, const u_char* packet){
 }
 
 void show_eth_mac(const struct ether_header *eth){
-	printf("\tDestination MAC adress: ");
-	for (int i = 0; i < sizeof(eth->ether_dhost); ++i){
-		printf("%x:", eth->ether_dhost[i]);
+	printf("\tDestination MAC address: ");
+	for (int i = 0; i < MAC_ADDR_SIZE; i++){
+		if (i != 0){
+			printf(":");
+		}
+		printf("%x", eth->ether_dhost[i]);
+
 	}
-	printf("\n\tSource MAC adress: ");
-	for (int i = 0; i < sizeof(eth->ether_shost); ++i){
-		printf("%x:", eth->ether_shost[i]);
+	printf("\n\tSource MAC address: ");
+	for (int i = 0; i < MAC_ADDR_SIZE; i++){
+		if (i != 0){
+			printf(":");
+		}
+		printf("%x", eth->ether_shost[i]);
 	}
 	printf("\n");
 }

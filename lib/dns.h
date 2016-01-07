@@ -1,4 +1,4 @@
-void styled_print(char* style, char* text);
+void styled_print(char* style, char* text, int cr);
 void line(char* separator, int length, int cr);
 void unknown_protocol();
 void shift(int shift);
@@ -41,15 +41,11 @@ struct dnshdr {
 };
 
 void dns(const u_char* packet){
-	styled_print("bold","DNS");
+	styled_print("bold","DNS",1);
 
 	packet = packet + SIZE_UDP_HEADER;
 	const struct dnshdr* dns;
 	dns = (const struct dnshdr*)(packet);
-
-	printf("\033[31m");
-	line("#",70,1);
-	printf("\033[0m");
 
 	if (arg_v != 1){
 		shift(4);
@@ -72,7 +68,7 @@ void show_query(const u_char* packet){
 	int query;
 	query = *packet;
 	shift(4);
-	styled_print("underline","Queries");
+	styled_print("underline","Queries",1);
 	printf("0x%x\n", query);
 }
 
